@@ -4,7 +4,6 @@
 
 #include "MotionControllerComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Runtime/MovieSceneTracks/Private/MovieSceneTracksCustomAccessors.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -19,15 +18,9 @@ APlayerCharacter::APlayerCharacter()
 
 	LeftController = CreateDefaultSubobject<UMotionControllerComponent>("LeftController");
 	LeftController->SetupAttachment(RootComponent);
-	LeftController->SetTrackingMotionSource(FName("Left"));
-
-	LeftHandMesh->SetupAttachment(LeftController);
 	
 	RightController = CreateDefaultSubobject<UMotionControllerComponent>("RightController");
 	RightController->SetupAttachment(RootComponent);
-	RightController->SetTrackingMotionSource(FName("Right"));
-
-	RightHandMesh->SetupAttachment(RightController);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -40,8 +33,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector Velocity = RightController->GetComponentVelocity();
-	UE_LOG(LogTemp,Warning,TEXT("Velocity : %s"), Velocity);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -52,6 +43,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 bool APlayerCharacter::IsAttack()
 {
-	return false;
+	return Super::IsAttack();
+	
 }
 
