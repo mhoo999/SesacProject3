@@ -7,6 +7,9 @@ ACharacterBase::ACharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	LeftHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>("LeftHandMesh");
+
+	RightHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>("RightHandMesh");
 }
 
 void ACharacterBase::BeginPlay()
