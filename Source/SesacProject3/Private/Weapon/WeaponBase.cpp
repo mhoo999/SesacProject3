@@ -39,6 +39,7 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 
 	UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor Label : %s"), *OtherActor->GetActorLabel());
 }
 
