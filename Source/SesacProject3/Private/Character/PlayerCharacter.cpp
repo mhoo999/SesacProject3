@@ -1,6 +1,6 @@
 
 
-#include "Player/PlayerCharacter.h"
+#include "Character/PlayerCharacter.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

@@ -2,11 +2,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class SESACPROJECT3_API APlayerCharacter : public ACharacter
+class SESACPROJECT3_API APlayerCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -21,4 +21,6 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	//UPROPERTY()
 };
