@@ -36,7 +36,7 @@ protected:
 	// EMainHand MainHand;
 
 	bool bIsStun = false;
-
+	
 	bool bIsDefence = false;
 
 public:
