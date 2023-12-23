@@ -27,3 +27,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+bool APlayerCharacter::IsAttack()
+{
+	return Super::IsAttack();
+	
+}
+
