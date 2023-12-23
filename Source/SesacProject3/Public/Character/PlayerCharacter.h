@@ -5,6 +5,7 @@
 #include "CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
+class UTextRenderComponent;
 class UMotionControllerComponent;
 class UCameraComponent;
 
@@ -37,6 +38,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UMotionControllerComponent* RightController;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UTextRenderComponent* LeftLog;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UTextRenderComponent* RightLog;
+	
 	FVector OldLocation;
 	FVector CurrentLocation;
 
