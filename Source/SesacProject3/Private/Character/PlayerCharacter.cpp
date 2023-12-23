@@ -18,9 +18,15 @@ APlayerCharacter::APlayerCharacter()
 
 	LeftController = CreateDefaultSubobject<UMotionControllerComponent>("LeftController");
 	LeftController->SetupAttachment(RootComponent);
+	LeftController->SetTrackingMotionSource(FName("Left"));
+
+	LeftHandMesh->SetupAttachment(LeftController);
 	
 	RightController = CreateDefaultSubobject<UMotionControllerComponent>("RightController");
 	RightController->SetupAttachment(RootComponent);
+	RightController->SetTrackingMotionSource(FName("Right"));
+
+	RightHandMesh->SetupAttachment(RightController);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -33,6 +39,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector Velocity = RightController->GetComponentVelocity();
+	UE_LOG(LogTemp, Warning, TEXT("Velocity : %s"), *Velocity.ToString());
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
