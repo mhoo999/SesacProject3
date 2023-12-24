@@ -31,6 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	LeftLog->SetupAttachment(LeftHandMesh);
 	LeftLog->SetRelativeLocation(FVector(-20, 10, 0));
 	LeftLog->SetRelativeRotation(FRotator(0, -90, -90));
+	LeftLog->SetRelativeScale3D(FVector(0.5));
 	LeftLog->SetHorizontalAlignment(EHTA_Center);
 	LeftLog->SetVerticalAlignment(EVRTA_TextCenter);
 	LeftLog->SetTextRenderColor(FColor(255, 255, 0));
@@ -47,6 +48,7 @@ APlayerCharacter::APlayerCharacter()
 	RightLog->SetupAttachment(RightHandMesh);
 	RightLog->SetRelativeLocation(FVector(20, 10, 0));
 	RightLog->SetRelativeRotation(FRotator(0, -90, 90));
+	RightLog->SetRelativeScale3D(FVector(0.5));
 	RightLog->SetHorizontalAlignment(EHTA_Center);
 	RightLog->SetVerticalAlignment(EVRTA_TextCenter);
 	RightLog->SetTextRenderColor(FColor(255, 255, 0));
@@ -62,19 +64,39 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector Velocity = RightController->GetComponentVelocity();
-	UE_LOG(LogTemp, Warning, TEXT("Velocity : %s"), *Velocity.ToString());
+	// 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
+	if (OldLocation != CurrentLocation)
+	{
+		OldLocation = RightController->GetComponentLocation();
+	}
+	CurrentLocation = RightController->GetComponentLocation();
+
+	// 속력 = 이동 거리 / 걸린 시간
+	FVector Velocity = (OldLocation - CurrentLocation) / DeltaTime;
+
+	// Velocity X, Y, Z 중 하나 이상 속력이 100을 넘기면 IsAttack()을 실행
+	if (Velocity.X > 100 || Velocity.Y > 100 || Velocity.Z > 100)
+	{
+		IsAttack();
+	}
+	
+	// Set RightLog Text
+	FString VelocityString = FString::Printf(TEXT("Velocity : %s"), *Velocity.ToString());
+	FText VelocityText = FText::FromString(VelocityString);
+	RightLog->SetText(VelocityText);
+	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 }
 
 bool APlayerCharacter::IsAttack()
 {
-	return Super::IsAttack();
+	LeftLog->SetText(FText::FromString(FString::Printf(TEXT("Run IsAttack"))));
 	
+	return true;
 }
 

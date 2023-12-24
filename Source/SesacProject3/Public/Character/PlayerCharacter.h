@@ -42,7 +42,7 @@ private:
 	UTextRenderComponent* LeftLog;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	UTextRenderComponent* RightLog;
+	UTextRenderComponent* RightLog;;
 	
 	FVector OldLocation;
 	FVector CurrentLocation;
