@@ -94,4 +94,6 @@ public:
 
 	// 스턴 발생 함수
 	virtual void StartStun();
+	
+	// virtual AWeapon* GetWeapon()
 };
