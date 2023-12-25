@@ -6,6 +6,7 @@
 #include "Character/CharacterBase.h"
 #include "EnemyBase.generated.h"
 
+class AWeaponBase;
 /**
  * 
  */
@@ -23,13 +24,24 @@ public:
 
 	UFUNCTION(CallInEditor)
 	void Attack();
-private:
+	UFUNCTION(CallInEditor)
+	void Defence();
+	UFUNCTION(CallInEditor)
+	void Release();
 	
+private:
 	void EndAttack();
 
 	void RotateHand();
 
+	void ReadyAttack(float DeltaSeconds);
+
 private:
+	// Test Weapon
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	AWeaponBase* TestWeapon;
+
+	// Attack
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float AttackDistance;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
@@ -38,6 +50,26 @@ private:
 	bool bIsAttack;
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	FVector AttackDirection;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float AttackStartPitchRotation;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float AttackEndPitchRotation;
+	
+	// Ready
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float ReadySpeed;
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	bool bIsReadyToAttack;
+
+	// Defence
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float DefecneDistance;
+	
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
-	FVector HandZeroLocation;
+	USceneComponent* HandZeroPoint;
+
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	FRotator RollRotator;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	FRotator PitchRotator;
 };

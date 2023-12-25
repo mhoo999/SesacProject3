@@ -6,6 +6,8 @@
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
+#include "Character/CharacterBase.h"
+
 // Sets default values
 AWeaponBase::AWeaponBase()
 {
@@ -14,7 +16,10 @@ AWeaponBase::AWeaponBase()
 
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	SetRootComponent(BoxComponent);
+	BoxComponent->SetHiddenInGame(false);
+	BoxComponent->SetBoxExtent(FVector(40.f, 2.f, 2.f));
+	BoxComponent->SetLineThickness(2.0f);
+	SetRootComponent(BoxComponent);	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
 	BashEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BashEffect"));
@@ -34,12 +39,39 @@ void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (GetActorForwardVector() * 300.0f), FColor::Red);
 }
 
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// 
-	UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor Label : %s"), *OtherActor->GetActorLabel());
+	if (bIsAttackMode == false) return;
+	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
+	{
+		if (Character == OwningPlayer) return;
+
+		if (Character->IsDefence())
+		{
+			Character->GetWeapon();
+		}
+
+		Character->ReceiveDamage();
+		
+		// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor Label : %s"), *OtherActor->GetActorLabel());
+	}
 }
 
+void AWeaponBase::SetOwningPlayer(ACharacterBase* NewOwningPlayer)
+{
+	OwningPlayer = NewOwningPlayer;
+}
+
+void AWeaponBase::SetAttackMode(bool bIsNewAttackMode)
+{
+	bIsAttackMode = bIsNewAttackMode;
+}
+
+void AWeaponBase::SetDefenceMode(bool bIsNewDefenceMode)
+{
+	bIsDefenceMode = bIsNewDefenceMode;
+}
