@@ -73,18 +73,21 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	// 속력 = 이동 거리 / 걸린 시간
 	FVector Velocity = (OldLocation - CurrentLocation) / DeltaTime;
-
-	// Velocity X, Y, Z 중 하나 이상 속력이 100을 넘기면 IsAttack()을 실행
-	if (Velocity.X > 100 || Velocity.Y > 100 || Velocity.Z > 100)
-	{
-		IsAttack();
-	}
+	// Velocity의 XYZ 값 중 가장 큰 값만 사용하기 위해 MaxValue 변수를 선언 
+	int MaxValue = static_cast<int>(FMath::Max3(Velocity.X,Velocity.Y, Velocity.Z));
 	
 	// Set RightLog Text
-	FString VelocityString = FString::Printf(TEXT("Velocity : %s"), *Velocity.ToString());
-	FText VelocityText = FText::FromString(VelocityString);
-	RightLog->SetText(VelocityText);
+	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %d"), MaxValue)));
 	
+	// MaxValue 값이 100 이상, bISAttack이 false일 경우, StartAttack()을 실행
+	if (MaxValue > 100 && bIsAttack == false)
+	{
+		StartAttack();
+	}
+	else // 아닐 경우 StopAttack()을 실행
+	{
+		StopAttack();
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -93,10 +96,20 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	
 }
 
-bool APlayerCharacter::IsAttack()
+void APlayerCharacter::StartAttack()
 {
-	LeftLog->SetText(FText::FromString(FString::Printf(TEXT("Run IsAttack"))));
-	
-	return true;
+	bIsAttack = true;
+	IsAttack();
 }
 
+void APlayerCharacter::StopAttack()
+{
+	bIsAttack = false;
+	IsAttack();
+}
+
+bool APlayerCharacter::IsAttack()
+{
+	LeftLog->SetText(FText::FromString(bIsAttack ? TEXT("true") : TEXT("false")));
+	return bIsAttack;
+}

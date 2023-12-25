@@ -46,7 +46,11 @@ private:
 	
 	FVector OldLocation;
 	FVector CurrentLocation;
+	bool bIsAttack = false;
 
 public:
+	void StartAttack();
+	void StopAttack();
 	virtual bool IsAttack() override;
+
 };
