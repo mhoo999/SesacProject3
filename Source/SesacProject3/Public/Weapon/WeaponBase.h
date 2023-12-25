@@ -33,6 +33,9 @@ public:
 	void SetAttackMode(bool bIsNewAttackMode);
 	void SetDefenceMode(bool bIsNewDefenceMode);
 
+	// Todo FailAttack 을 오버라이딩해서 Enemy에 맞게 변형 필요
+	// virtual void FailAttack() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	float KnockbackDistance;
@@ -50,4 +53,8 @@ private:
 	bool bIsAttackMode;
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	bool bIsDefenceMode;
+
+	// 두 Vector 를 Dot 했을 때 이 값보다 작으면 방어 성공
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float DefenceSuccessValue = 0.5f;
 };

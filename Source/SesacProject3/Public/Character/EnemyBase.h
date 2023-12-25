@@ -28,6 +28,10 @@ public:
 	void Defence();
 	UFUNCTION(CallInEditor)
 	void Release();
+
+	virtual bool IsDefence() override;
+
+	FVector GetAttackAngle();
 	
 private:
 	void EndAttack();
@@ -37,10 +41,6 @@ private:
 	void ReadyAttack(float DeltaSeconds);
 
 private:
-	// Test Weapon
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
-	AWeaponBase* TestWeapon;
-
 	// Attack
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float AttackDistance;

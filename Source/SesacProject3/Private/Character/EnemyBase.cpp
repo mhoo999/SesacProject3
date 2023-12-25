@@ -22,12 +22,12 @@ void AEnemyBase::BeginPlay()
 	//RightHandMesh->SetRelativeLocation(HandZeroLocation + FVector(0, 0, AttackDistance));
 
 	// Spawn Sword
-	TestWeapon = GetWorld()->SpawnActor<AWeaponBase>();
+	Weapon = GetWorld()->SpawnActor<AWeaponBase>();
 
-	TestWeapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	TestWeapon->SetActorRelativeLocation(FVector(33, 21, -3));
-	TestWeapon->SetActorRelativeRotation(FRotator(0, 20, 0));
-	TestWeapon->SetOwningPlayer(this);
+	Weapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	Weapon->SetActorRelativeLocation(FVector(33, 21, -3));
+	Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
+	Weapon->SetOwningPlayer(this);
 }
 
 bool AEnemyBase::IsAttack()
@@ -78,13 +78,13 @@ void AEnemyBase::Attack()
 {
 	bIsReadyToAttack = false;
 	bIsAttack = true;
-	TestWeapon->SetAttackMode(bIsAttack);
+	Weapon->SetAttackMode(bIsAttack);
 }
 
 void AEnemyBase::Defence()
 {
 	bIsDefence = true;
-	TestWeapon->SetDefenceMode(bIsDefence);
+	Weapon->SetDefenceMode(bIsDefence);
 	RightHandMesh->SetRelativeLocation(FVector(DefecneDistance, 0, 0));
 	PitchRotator.Pitch = 0.0f;
 }
@@ -92,14 +92,25 @@ void AEnemyBase::Defence()
 void AEnemyBase::Release()
 {
 	bIsDefence = false;
-	TestWeapon->SetDefenceMode(bIsDefence);
+	Weapon->SetDefenceMode(bIsDefence);
 	RightHandMesh->SetRelativeLocation(FVector(AttackDistance, 0, 0));
+}
+
+bool AEnemyBase::IsDefence()
+{
+	return bIsDefence;
+}
+
+FVector AEnemyBase::GetAttackAngle()
+{
+	FVector AttackAngle = FTransform(GetActorRotation()).TransformRotation(RollRotator.Quaternion()).RotateVector(GetActorUpVector());
+	return AttackAngle;
 }
 
 void AEnemyBase::EndAttack()
 {
 	bIsAttack = false;
-	TestWeapon->SetAttackMode(bIsAttack);
+	Weapon->SetAttackMode(bIsAttack);
 }
 
 void AEnemyBase::RotateHand()
