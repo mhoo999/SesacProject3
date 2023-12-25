@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
+class AWeaponBase;
+
 UCLASS()
 class SESACPROJECT3_API ACharacterBase : public ACharacter
 {
@@ -29,8 +31,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* RightHandMesh;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	// AWeapon* Weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	AWeaponBase* Weapon;
 
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	// EMainHand MainHand;
@@ -95,5 +97,5 @@ public:
 	// 스턴 발생 함수
 	virtual void StartStun();
 	
-	// virtual AWeapon* GetWeapon()
+	virtual AWeaponBase* GetWeapon();
 };

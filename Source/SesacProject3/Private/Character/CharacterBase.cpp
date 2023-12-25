@@ -3,8 +3,6 @@
 
 #include "Character/CharacterBase.h"
 
-#include "Components/CapsuleComponent.h"
-
 ACharacterBase::ACharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -104,3 +102,7 @@ void ACharacterBase::StartStun()
 	// 일정 시간 이후 또는 맞으면 원복
 }
 
+AWeaponBase* ACharacterBase::GetWeapon()
+{
+	return Weapon;
+}
