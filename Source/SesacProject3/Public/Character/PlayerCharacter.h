@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
+#include "InputAction.h"
 #include "PlayerCharacter.generated.h"
 
 class UTextRenderComponent;
@@ -42,7 +43,10 @@ private:
 	UTextRenderComponent* LeftLog;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	UTextRenderComponent* RightLog;;
+	UTextRenderComponent* RightLog;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	UInputAction* RightTrigger;
 	
 	FVector OldLocation;
 	FVector CurrentLocation;
@@ -53,4 +57,8 @@ public:
 	void StopAttack();
 	virtual bool IsAttack() override;
 
+	void StartDefence();
+	void StopDefence();
+
+	virtual void StartStun() override;
 };
