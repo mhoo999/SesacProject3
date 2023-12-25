@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "DSP/Chorus.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -80,7 +81,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %d"), MaxValue)));
 	
 	// MaxValue 값이 100 이상, bISAttack이 false일 경우, StartAttack()을 실행
-	if (MaxValue > 100 && bIsAttack == false)
+	if (MaxValue > 100 && bIsAttack == false && bIsDefence == false)
 	{
 		StartAttack();
 	}
@@ -93,7 +94,13 @@ void APlayerCharacter::Tick(float DeltaTime)
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInputComponent != nullptr)
+	{
+		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Triggered, this, &APlayerCharacter::StartDefence);
+		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
+	}
 }
 
 void APlayerCharacter::StartAttack()
@@ -112,4 +119,14 @@ bool APlayerCharacter::IsAttack()
 {
 	LeftLog->SetText(FText::FromString(bIsAttack ? TEXT("true") : TEXT("false")));
 	return bIsAttack;
+}
+
+void APlayerCharacter::StartDefence()
+{
+	bIsDefence = true;
+}
+
+void APlayerCharacter::StopDefence()
+{
+	bIsDefence = false;
 }
