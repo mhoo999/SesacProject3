@@ -8,6 +8,7 @@
 #include "Components/TextRenderComponent.h"
 #include "DSP/Chorus.h"
 #include "EnhancedInputComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -129,4 +130,11 @@ void APlayerCharacter::StartDefence()
 void APlayerCharacter::StopDefence()
 {
 	bIsDefence = false;
+}
+
+void APlayerCharacter::StartStun()
+{
+	Super::StartStun();
+
+	// bIsStun 동안 상태 Display(HUD 빨갛게 오버레이 또는 헤롱헤롱(?), 삐약삐약(?))
 }

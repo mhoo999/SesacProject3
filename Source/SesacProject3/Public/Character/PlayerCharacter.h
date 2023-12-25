@@ -59,4 +59,6 @@ public:
 
 	void StartDefence();
 	void StopDefence();
+
+	virtual void StartStun() override;
 };
