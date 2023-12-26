@@ -28,6 +28,8 @@ void AEnemyBase::BeginPlay()
 	Weapon->SetActorRelativeLocation(FVector(33, 21, -3));
 	Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
 	Weapon->SetOwningPlayer(this);
+
+	Defence();
 }
 
 bool AEnemyBase::IsAttack()

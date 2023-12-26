@@ -24,7 +24,7 @@ public:
 
 	UFUNCTION(CallInEditor)
 	void Attack();
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, BlueprintCallable)
 	void Defence();
 	UFUNCTION(CallInEditor)
 	void Release();

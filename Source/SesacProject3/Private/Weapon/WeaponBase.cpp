@@ -29,7 +29,7 @@ AWeaponBase::AWeaponBase()
 
 	WeaponEndLocation = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponEndLocation"));
 	WeaponEndLocation->SetupAttachment(RootComponent);
-	WeaponEndLocation->SetRelativeLocation(FVector(40.f, 0.f, 0.f));
+	WeaponEndLocation->SetRelativeLocation(FVector(40.f, 0.f, 30.f));
 }
 
 // Called when the game starts or when spawned
