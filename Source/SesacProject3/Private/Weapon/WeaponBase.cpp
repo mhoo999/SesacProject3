@@ -26,6 +26,10 @@ AWeaponBase::AWeaponBase()
 	WeaponMesh->SetupAttachment(RootComponent);
 	BashEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BashEffect"));
 	BashEffect->SetupAttachment(WeaponMesh);
+
+	WeaponEndLocation = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponEndLocation"));
+	WeaponEndLocation->SetupAttachment(RootComponent);
+	WeaponEndLocation->SetRelativeLocation(FVector(40.f, 0.f, 0.f));
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +45,11 @@ void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (Cast<AEnemyBase>(OwningPlayer)->GetAttackAngle() * 300.0f), FColor::Red);
+
+	if (bIsDefenceMode)
+	{
+		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (Cast<AEnemyBase>(OwningPlayer)->GetAttackAngle() * 300.0f), FColor::Purple);
+	}
 }
 
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -52,16 +60,15 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 	if (AEnemyBase* Character = Cast<AEnemyBase>(OtherActor))
 	{
 		if (Character == OwningPlayer) return;
-
 			
 		if (Character->IsDefence())
-		{
+		{	
 			float Value = Cast<AEnemyBase>(OwningPlayer)->GetAttackAngle().Dot(Character->GetAttackAngle());
 			Value = Value >= 0.0f ? Value : -Value; 
 			// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Dot Result : %f"), Value);
 			if (Value <= DefenceSuccessValue)
 			{
-				// Todo : Fail Attack 오버라이딩 구현 필요
+				// Todo : Fail 시 상대방이 따라오는 기능 필요
 				//OwningPlayer->FailAttack();
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
@@ -75,8 +82,6 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		// Todo : Move 기능이 약간 이상함
 		//Character->ReceiveDamage();
 		//OwningPlayer->SuccessAttack();
-		
-		// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor Label : %s"), *OtherActor->GetActorLabel());
 	}
 }
 

@@ -57,4 +57,7 @@ private:
 	// 두 Vector 를 Dot 했을 때 이 값보다 작으면 방어 성공
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float DefenceSuccessValue = 0.5f;
+
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	USceneComponent* WeaponEndLocation;
 };
