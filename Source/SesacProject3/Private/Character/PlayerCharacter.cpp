@@ -67,7 +67,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
+#pragma region (CurrentLoc - OldLoc) / DeltaTime
+	 // 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
 	if (OldLocation != CurrentLocation)
 	{
 		OldLocation = RightController->GetComponentLocation();
@@ -76,6 +77,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	// 속력 = 이동 거리 / 걸린 시간
 	FVector Velocity = (OldLocation - CurrentLocation) / DeltaTime;
+	
 	// Velocity의 XYZ 값 중 가장 큰 값만 사용하기 위해 MaxValue 변수를 선언 
 	int MaxValue = static_cast<int>(FMath::Max3(Velocity.X,Velocity.Y, Velocity.Z));
 	
@@ -91,6 +93,33 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		StopAttack();
 	}
+#pragma endregion
+
+#pragma region 내각 사용
+	/*if (OldLocation != CurrentLocation)
+	{
+		OldLocation = RightController->GetUpVector();
+	}
+	else
+	{
+		CurrentLocation = RightController->GetUpVector();
+	}
+	
+	// 내각을 구해서 45도 이상이면 공격으로 판정
+	float DotProduct = FVector::DotProduct(OldLocation, CurrentLocation);
+
+	// Set RightLog Text
+	RightLog->SetText(FText::FromString(FString::Printf(TEXT("%f"), DotProduct)));
+	
+	if (DotProduct > 45 && bIsAttack == false && bIsDefence == false)
+	{
+		StartAttack();
+	}
+	else
+	{
+		StopAttack();
+	}*/
+#pragma endregion
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
