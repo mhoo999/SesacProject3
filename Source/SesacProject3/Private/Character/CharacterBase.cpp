@@ -52,22 +52,28 @@ bool ACharacterBase::IsAttack()
 
 void ACharacterBase::SuccessAttack()
 {
-	// AdvanceDistance만큼 Vertical 이동
-	MoveVertical(AdvanceDistance);
-}
-
-void ACharacterBase::FailAttack()
-{
-	// AttackFailknockbackDistance만큼 Vertical 이동
-	MoveVertical(AttackFailknockbackDistance);
-
-	StartStun();
+	// AttackSuccessDistance만큼 Vertical 전진
+	MoveVertical(AttackSuccessDistance);
 }
 
 void ACharacterBase::ReceiveDamage()
 {
-	// ReceiveDamageknockbackDistance만큼 Vertical 이동
-	MoveVertical(ReceiveDamageknockbackDistance);
+	// AttackSuccessDistance만큼 Vertical 후퇴
+	MoveVertical(AttackSuccessDistance * -1);
+}
+
+void ACharacterBase::SuccessDefence()
+{
+	// DefenceSuccessDistance만큼 Vertical 전진
+	MoveVertical(DefenceSuccessDistance);
+}
+
+void ACharacterBase::FailAttack()
+{
+	// DefenceSuccessDistance만큼 Vertical 후퇴
+	MoveVertical(DefenceSuccessDistance * -1);
+
+	StartStun();
 }
 
 void ACharacterBase::MoveVertical(float VerticalDistance)
@@ -105,4 +111,9 @@ void ACharacterBase::StartStun()
 AWeaponBase* ACharacterBase::GetWeapon()
 {
 	return Weapon;
+}
+
+FVector ACharacterBase::GetAttackAngle()
+{
+	return FVector();
 }

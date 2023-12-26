@@ -31,23 +31,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* RightHandMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	AWeaponBase* Weapon;
 
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	// EMainHand MainHand;
 
-	// 공격 성공시 전진 거리
+	// 공격 성공시 전진, 피격시 넉백 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
-	float AdvanceDistance = 50.f;
+	float AttackSuccessDistance = 50.f;
 
-	// 공격 실패시 넉백 거리
+	// 방어 성공시 전진, 공격 실패시 넉백 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
-	float AttackFailknockbackDistance = -25.f;
-
-	// 피격시 넉백 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
-	float ReceiveDamageknockbackDistance = -50.f;
+	float DefenceSuccessDistance = -25.f;
 	
 	// Vertical 이동 스피드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
@@ -82,11 +78,14 @@ public:
 	// 공격 성공 시, 전진
 	void SuccessAttack();
 	
-	// 공격 실패 시(상대 방어 시) 호출, 스턴 + 넉백
-	void FailAttack();
-	
 	// 피격 시, 넉백
 	void ReceiveDamage();
+	
+	// 방어 성공 시, 전진
+	void SuccessDefence();
+	
+	// 공격 실패 시(상대 방어 시) 호출, 스턴 + 넉백
+	void FailAttack();
 
 	// Vertical 이동(전진, 넉백)
 	void MoveVertical(float VerticalDistance);
@@ -98,4 +97,6 @@ public:
 	virtual void StartStun();
 	
 	virtual AWeaponBase* GetWeapon();
+
+	virtual FVector GetAttackAngle();
 };

@@ -9,6 +9,7 @@
 #include "DSP/Chorus.h"
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Weapon/WeaponBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -107,12 +108,20 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::StartAttack()
 {
 	bIsAttack = true;
+	if (Weapon)
+	{
+		Weapon->SetAttackMode(true);
+	}
 	IsAttack();
 }
 
 void APlayerCharacter::StopAttack()
 {
 	bIsAttack = false;
+	if (Weapon)
+	{
+		Weapon->SetAttackMode(false);
+	}
 	IsAttack();
 }
 
