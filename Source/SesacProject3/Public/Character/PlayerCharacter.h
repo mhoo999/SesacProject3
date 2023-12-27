@@ -47,6 +47,14 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RightTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	float AttackSuccessValue = -1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	float AttackTimer = 0.3f;
+
+	float CurrentTime = 0;
 	
 	FVector OldLocation;
 	FVector CurrentLocation;

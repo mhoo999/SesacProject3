@@ -9,6 +9,7 @@
 #include "DSP/Chorus.h"
 #include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Weapon/WeaponBase.h"
 
 // Sets default values
@@ -60,39 +61,55 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CurrentLocation = RightController->GetComponentLocation();
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-#pragma region (CurrentLoc - OldLoc) / DeltaTime
-	 // 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
-	if (OldLocation != CurrentLocation)
+	if (bIsAttack)
 	{
-		OldLocation = RightController->GetComponentLocation();
+		DrawDebugLine(GetWorld(), RightHandMesh->GetComponentLocation(), RightHandMesh->GetComponentLocation() + RightHandMesh->GetForwardVector() * 500.0f, FColor::Red, false, 1.5f, 0, 3);
 	}
-	CurrentLocation = RightController->GetComponentLocation();
 
-	// 속력 = 이동 거리 / 걸린 시간
-	FVector Velocity = (OldLocation - CurrentLocation) / DeltaTime;
+#pragma region (CurrentLoc - OldLoc) / DeltaTime
+
+	UE_LOG(LogTemp, Warning, TEXT("APlayerCharacter::Tick) CurrentTime : %.2f"), CurrentTime);
+	CurrentTime += DeltaTime;
+
+	// 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
+	// if (OldLocation != CurrentLocation && CurrentTime >= 0.f)
+	// {
+	// 	OldLocation = RightController->GetComponentLocation();
+	// }
 	
-	// Velocity의 XYZ 값 중 가장 큰 값만 사용하기 위해 MaxValue 변수를 선언 
-	int MaxValue = static_cast<int>(FMath::Max3(Velocity.X,Velocity.Y, Velocity.Z));
-	
-	// Set RightLog Text
-	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %d"), MaxValue)));
-	
-	// MaxValue 값이 100 이상, bISAttack이 false일 경우, StartAttack()을 실행
-	if (MaxValue > 100 && bIsAttack == false && bIsDefence == false)
+	if (CurrentTime >= AttackTimer)
 	{
-		StartAttack();
+		CurrentTime = 0;
+
+		OldLocation = CurrentLocation;
+		CurrentLocation = RightController->GetComponentLocation();
+		
+		// 속력 = 이동 거리 / 걸린 시간
+		FVector Velocity = (OldLocation - CurrentLocation) / DeltaTime;
+		
+		float MaxValue = RightHandMesh->GetRightVector().Dot(Velocity);
+
+		// Set RightLog Text
+		RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %.2f"), MaxValue)));
+		
+		// MaxValue 값이 100 이상, bISAttack이 false일 경우, StartAttack()을 실행
+		if (MaxValue <= AttackSuccessValue && bIsAttack == false && bIsDefence == false)
+		{
+			StartAttack();
+		}
+		else if (MaxValue > AttackSuccessValue && bIsAttack == true) // 아닐 경우 StopAttack()을 실행
+		{
+			StopAttack();
+		}
 	}
-	else // 아닐 경우 StopAttack()을 실행
-	{
-		StopAttack();
-	}
+	
 #pragma endregion
 
 #pragma region 내각 사용
