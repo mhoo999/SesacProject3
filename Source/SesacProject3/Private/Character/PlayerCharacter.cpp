@@ -120,6 +120,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 		StopAttack();
 	}*/
 #pragma endregion
+
+	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -175,4 +177,11 @@ void APlayerCharacter::StartStun()
 	Super::StartStun();
 
 	// bIsStun 동안 상태 Display(HUD 빨갛게 오버레이 또는 헤롱헤롱(?), 삐약삐약(?))
+}
+
+FVector APlayerCharacter::GetAttackAngle()
+{
+	
+	
+	return FVector();
 }
