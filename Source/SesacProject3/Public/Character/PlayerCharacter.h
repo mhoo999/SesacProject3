@@ -50,6 +50,7 @@ private:
 	
 	FVector OldLocation;
 	FVector CurrentLocation;
+	
 	bool bIsAttack = false;
 
 public:
@@ -61,6 +62,7 @@ public:
 	void StopDefence();
 
 	virtual void StartStun() override;
+	virtual void StopStun() override;
 
 	virtual FVector GetAttackAngle() override;
 };
