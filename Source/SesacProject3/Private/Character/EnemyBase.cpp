@@ -5,8 +5,6 @@
 
 #include "Weapon/WeaponBase.h"
 
-#include <Kismet/KismetMathLibrary.h>
-
 AEnemyBase::AEnemyBase()
 {
 	HandZeroPoint = CreateDefaultSubobject<USceneComponent>(TEXT("HandZeroPoint"));
@@ -29,7 +27,8 @@ void AEnemyBase::BeginPlay()
 	Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
 	Weapon->SetOwningPlayer(this);
 
-	Defence();
+	EnemyPlayer = Cast<ACharacterBase>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+	// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::BeginPlay) EnemyPlayer Name : %s"), *EnemyPlayer->GetActorNameOrLabel());
 }
 
 bool AEnemyBase::IsAttack()
@@ -41,17 +40,11 @@ void AEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// Roll Rotation 회전은 Attack 과는 별개로 처리해야할듯 (Defence에서도 사용하므로)
+	
+	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
 
-	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(PitchRotator.Quaternion()));
-
-	// 방어 중인 경우
-	if (bIsDefence)
-	{
-		
-	}
 	// 공격 중인 경우
-	else if (bIsAttack)
+	if (bIsAttack)
 	{
 		//HandZeroPoint->AddLocalRotation(FRotator(AttackSpeed * DeltaSeconds,0,0));
 
@@ -62,6 +55,17 @@ void AEnemyBase::Tick(float DeltaSeconds)
 			EndAttack();
 		}
 	}
+	// 방어 중인 경우 (방어를 몇초 하다가 공격으로 전환할 것인지 체크)
+	else if (bIsDefence)
+	{
+		// 플레이어의 각도를 따라갈 것인지?
+		// 일정 각도로 돌아갈 것인지?
+
+		if (RotateHand(DeltaSeconds))
+		{
+			Attack();
+		}
+	}	
 	// 아닌 경우 (대기?상태)
 	else
 	{
@@ -78,6 +82,7 @@ void AEnemyBase::Tick(float DeltaSeconds)
 
 void AEnemyBase::Attack()
 {
+	Release();
 	bIsReadyToAttack = false;
 	bIsAttack = true;
 	Weapon->SetAttackMode(bIsAttack);
@@ -85,10 +90,11 @@ void AEnemyBase::Attack()
 
 void AEnemyBase::Defence()
 {
+	bIsAttack = false;
 	bIsDefence = true;
 	Weapon->SetDefenceMode(bIsDefence);
 	RightHandMesh->SetRelativeLocation(FVector(DefecneDistance, 0, 0));
-	PitchRotator.Pitch = 0.0f;
+	// PitchRotator.Pitch = 0.0f;
 }
 
 void AEnemyBase::Release()
@@ -113,11 +119,33 @@ void AEnemyBase::EndAttack()
 {
 	bIsAttack = false;
 	Weapon->SetAttackMode(bIsAttack);
+
+	RollRotator.Roll += 180.f;
+	PitchRotator.Pitch = AttackStartPitchRotation;
+
+	if (RollRotator.Roll >= 360.f) RollRotator.Roll -= 360.f;
+
+	TargetRollRotation = FMath::RandRange(0.0f, 359.0f);
+	
+	Defence();
 }
 
-void AEnemyBase::RotateHand()
+bool AEnemyBase::RotateHand(float DeltaSeconds)
 {
+	if (RollRotator.Roll > TargetRollRotation) RollRotator.Roll -= DeltaSeconds * HandRotateSpeed;
+	else if (RollRotator.Roll < TargetRollRotation) RollRotator.Roll += DeltaSeconds * HandRotateSpeed;
+
+	if (FMath::RandRange(0.0f, 100.0f) <= 5.0f)
+	{
+		TargetRollRotation *= -1;
+	}
+
+	if (FMath::Abs(RollRotator.Roll - TargetRollRotation) <= RotationTolerance)
+	{
+		return true;
+	}
 	
+	return false;
 }
 
 void AEnemyBase::ReadyAttack(float DeltaSeconds)

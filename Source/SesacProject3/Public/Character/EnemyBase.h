@@ -31,16 +31,20 @@ public:
 
 	virtual bool IsDefence() override;
 
-	FVector GetAttackAngle();
+	virtual FVector GetAttackAngle() override;
 	
 private:
 	void EndAttack();
 
-	void RotateHand();
+	bool RotateHand(float DeltaSeconds);
 
 	void ReadyAttack(float DeltaSeconds);
 
 private:
+	// Player
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	ACharacterBase* EnemyPlayer;
+	
 	// Attack
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float AttackDistance;
@@ -68,6 +72,13 @@ private:
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess, MakeEditWidget))
 	USceneComponent* HandZeroPoint;
 
+	// Rotation
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float RotationTolerance;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
+	float HandRotateSpeed;
+	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	float TargetRollRotation;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	FRotator RollRotator;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))

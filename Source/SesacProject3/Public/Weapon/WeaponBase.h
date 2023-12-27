@@ -29,6 +29,7 @@ public:
 	UFUNCTION()
 	void OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+	UFUNCTION(BlueprintCallable)
 	void SetOwningPlayer(ACharacterBase* NewOwningPlayer);
 	void SetAttackMode(bool bIsNewAttackMode);
 	void SetDefenceMode(bool bIsNewDefenceMode);
