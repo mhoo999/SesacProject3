@@ -55,21 +55,29 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Todo : 지금 AEnemyBase로 되어있는데 GetAttackAngle 함수를 CharacterBase에 구현 후 CharacterBase로 Cast하도록 바꿔야함 
+	// Todo : 지금 AEnemyBase로 되어있는데 GetAttackAngle 함수를 CharacterBase에 구현 후 CharacterBase로 Cast하도록 바꿔야함
+	
+	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap"));
+	
 	if (bIsAttackMode == false) return;
-	if (AEnemyBase* Character = Cast<AEnemyBase>(OtherActor))
+	
+	
+	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap"));
+	
+	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
 	{
 		if (Character == OwningPlayer) return;
 			
 		if (Character->IsDefence())
 		{	
-			float Value = Cast<AEnemyBase>(OwningPlayer)->GetAttackAngle().Dot(Character->GetAttackAngle());
+			float Value = OwningPlayer->GetAttackAngle().Dot(Character->GetAttackAngle());
 			Value = Value >= 0.0f ? Value : -Value; 
 			// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Dot Result : %f"), Value);
 			if (Value <= DefenceSuccessValue)
 			{
 				// Todo : Fail 시 상대방이 따라오는 기능 필요
-				//OwningPlayer->FailAttack();
+				OwningPlayer->FailAttack();
+				Character->SuccessDefence();
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
 			}
@@ -80,8 +88,8 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		}
 
 		// Todo : Move 기능이 약간 이상함
-		//Character->ReceiveDamage();
-		//OwningPlayer->SuccessAttack();
+		Character->ReceiveDamage();
+		OwningPlayer->SuccessAttack();
 	}
 }
 
