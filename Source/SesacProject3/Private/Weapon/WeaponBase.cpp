@@ -63,10 +63,12 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 	
 	
 	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap"));
-	
 	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
 	{
 		if (Character == OwningPlayer) return;
+
+		// 방어든 공격이든 상관없이 검의 충돌 처리를 꺼줌 (언제 켜줄지가 문제)
+		BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			
 		if (Character->IsDefence())
 		{	
@@ -77,7 +79,12 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 			{
 				// Todo : Fail 시 상대방이 따라오는 기능 필요
 				OwningPlayer->FailAttack();
+				OwningPlayer->StartStun();
 				Character->SuccessDefence();
+				if (AEnemyBase* Enemy = Cast<AEnemyBase>(Character))
+				{
+					Enemy->Attack();
+				}
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
 			}
@@ -101,6 +108,8 @@ void AWeaponBase::SetOwningPlayer(ACharacterBase* NewOwningPlayer)
 void AWeaponBase::SetAttackMode(bool bIsNewAttackMode)
 {
 	bIsAttackMode = bIsNewAttackMode;
+
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void AWeaponBase::SetDefenceMode(bool bIsNewDefenceMode)

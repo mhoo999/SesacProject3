@@ -13,6 +13,15 @@ AEnemyBase::AEnemyBase()
 	LeftHandMesh->SetupAttachment(HandZeroPoint);
 }
 
+void AEnemyBase::StartStun()
+{
+	Super::StartStun();
+	EndAttack();
+	Release();
+
+	CurrentStunTime = 0.0f;
+}
+
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -39,6 +48,16 @@ bool AEnemyBase::IsAttack()
 void AEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (bIsStun)
+	{
+		CurrentStunTime += DeltaSeconds;
+		if (CurrentStunTime >= MaxStunTime)
+		{
+			bIsStun = false;
+		}
+		else return;
+	}
 
 	
 	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
