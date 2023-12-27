@@ -38,29 +38,33 @@ protected:
 	// EMainHand MainHand;
 
 	// 공격 성공시 전진, 피격시 넉백 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float AttackSuccessDistance = 50.f;
 
 	// 방어 성공시 전진, 공격 실패시 넉백 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float DefenceSuccessDistance = -25.f;
 	
 	// Vertical 이동 스피드
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float VerticalInterpSpeed = 5.0f;
 
 	// Horizontal 이동 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float MoveHorizontalDistance = 50.f;
 
 	// Horizontal 이동 스피드
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|MoveValue", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float MoveHorizontalInterpSpeed = 5.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
+	float StunTime = 1.0f;
+	
 	bool bIsStun = false;
 
 	bool bIsDefence = false;
 
+	FTimerHandle StunTimerHandler;
 
 public:
 	// 방어 상태를 반환하는 함수
@@ -95,6 +99,8 @@ public:
 
 	// 스턴 발생 함수
 	virtual void StartStun();
+
+	virtual void StopStun();
 	
 	virtual AWeaponBase* GetWeapon();
 

@@ -60,6 +60,11 @@ void ACharacterBase::ReceiveDamage()
 {
 	// AttackSuccessDistance만큼 Vertical 후퇴
 	MoveVertical(AttackSuccessDistance * -1);
+
+	if (bIsStun)
+	{
+		bIsStun = false;
+	}
 }
 
 void ACharacterBase::SuccessDefence()
@@ -92,6 +97,16 @@ void ACharacterBase::StartStun()
 
 	// 일정 시간 동안 입력 무시
 	// 일정 시간 이후 또는 맞으면 원복
+	
+	if (StunTimerHandler.IsValid()) GetWorldTimerManager().ClearTimer(StunTimerHandler);
+	GetWorldTimerManager().SetTimer(StunTimerHandler, this, &ACharacterBase::StopStun, StunTime, false);
+}
+
+void ACharacterBase::StopStun()
+{
+	bIsStun = false;
+
+	// 재동작
 }
 
 AWeaponBase* ACharacterBase::GetWeapon()
