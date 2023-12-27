@@ -43,7 +43,7 @@ protected:
 
 	// 방어 성공시 전진, 공격 실패시 넉백 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float DefenceSuccessDistance = -25.f;
+	float DefenceSuccessDistance = 25.f;
 	
 	// Vertical 이동 스피드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
