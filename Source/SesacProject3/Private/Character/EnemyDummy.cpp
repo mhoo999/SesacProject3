@@ -3,7 +3,11 @@
 
 #include "Character/EnemyDummy.h"
 
-void AEnemyDummy::SetHandRotaiton(FVector2D InputVector)
+void AEnemyDummy::AddHandRotaiton()
 {
-
+	RollRotator.Roll += 45.0f;
+	if (RollRotator.Roll >= 360.0f)
+	{
+		RollRotator.Roll -= 360.0f;
+	}
 }

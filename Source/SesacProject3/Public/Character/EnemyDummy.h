@@ -15,5 +15,6 @@ class SESACPROJECT3_API AEnemyDummy : public AEnemyBase
 	GENERATED_BODY()
 
 public:
-	void SetHandRotaiton(FVector2D InputVector);
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void AddHandRotaiton();
 };
