@@ -63,7 +63,7 @@ void ACharacterBase::ReceiveDamage()
 
 	if (bIsStun)
 	{
-		bIsStun = false;
+		StopStun();
 	}
 }
 
