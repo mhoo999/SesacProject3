@@ -128,7 +128,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	if (EnhancedInputComponent != nullptr)
+	if (EnhancedInputComponent != nullptr && bIsStun == false)
 	{
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Triggered, this, &APlayerCharacter::StartDefence);
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
@@ -174,16 +174,13 @@ void APlayerCharacter::StopDefence()
 void APlayerCharacter::StartStun()
 {
 	Super::StartStun();
-
-	// Controller Disable
+	
 	// bIsStun 동안 상태 Display(HUD 빨갛게 오버레이 또는 헤롱헤롱(?), 삐약삐약(?))
 }
 
 void APlayerCharacter::StopStun()
 {
 	Super::StopStun();
-
-	// Controller Enable
 }
 
 FVector APlayerCharacter::GetAttackAngle()
