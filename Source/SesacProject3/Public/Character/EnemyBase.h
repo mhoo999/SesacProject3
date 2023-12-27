@@ -22,32 +22,26 @@ public:
 	
 	virtual void BeginPlay() override;
 	virtual bool IsAttack() override;
-	virtual void Tick(float DeltaSeconds) override;
 
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, BlueprintCallable)
 	void Attack();
 	UFUNCTION(CallInEditor, BlueprintCallable)
 	void Defence();
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, BlueprintCallable)
 	void Release();
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual bool IsDefence() override;
 
 	virtual FVector GetAttackAngle() override;
 	
-private:
-	void EndAttack();
+protected:
+	virtual void EndAttack();
 
 	bool RotateHand(float DeltaSeconds);
 
 	void ReadyAttack(float DeltaSeconds);
-
-private:
-	// Stun
-	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
-	float MaxStunTime;
-	UPROPERTY(Meta = (AllowPrivateAccess))
-	float CurrentStunTime;
 	
 	// Player
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))

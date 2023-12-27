@@ -81,10 +81,11 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 				OwningPlayer->FailAttack();
 				OwningPlayer->StartStun();
 				Character->SuccessDefence();
-				if (AEnemyBase* Enemy = Cast<AEnemyBase>(Character))
-				{
-					Enemy->Attack();
-				}
+				// if (AEnemyBase* Enemy = Cast<AEnemyBase>(Character))
+				// {
+				// 	UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Attack When Defence Successed"));
+				// 	Enemy->Attack();
+				// }
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
 			}

@@ -18,8 +18,6 @@ void AEnemyBase::StartStun()
 	Super::StartStun();
 	EndAttack();
 	Release();
-
-	CurrentStunTime = 0.0f;
 }
 
 void AEnemyBase::BeginPlay()
@@ -38,65 +36,13 @@ void AEnemyBase::BeginPlay()
 
 	EnemyPlayer = Cast<ACharacterBase>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::BeginPlay) EnemyPlayer Name : %s"), *EnemyPlayer->GetActorNameOrLabel());
+
+	LeftHandMesh->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 
 bool AEnemyBase::IsAttack()
 {
 	return bIsAttack;
-}
-
-void AEnemyBase::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (bIsStun)
-	{
-		CurrentStunTime += DeltaSeconds;
-		if (CurrentStunTime >= MaxStunTime)
-		{
-			bIsStun = false;
-		}
-		else return;
-	}
-
-	
-	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
-
-	// 공격 중인 경우
-	if (bIsAttack)
-	{
-		//HandZeroPoint->AddLocalRotation(FRotator(AttackSpeed * DeltaSeconds,0,0));
-
-		PitchRotator.Pitch += DeltaSeconds * AttackSpeed;
-
-		if (PitchRotator.Pitch <= AttackEndPitchRotation)
-		{
-			EndAttack();
-		}
-	}
-	// 방어 중인 경우 (방어를 몇초 하다가 공격으로 전환할 것인지 체크)
-	else if (bIsDefence)
-	{
-		// 플레이어의 각도를 따라갈 것인지?
-		// 일정 각도로 돌아갈 것인지?
-
-		if (RotateHand(DeltaSeconds))
-		{
-			Attack();
-		}
-	}	
-	// 아닌 경우 (대기?상태)
-	else
-	{
-		if (bIsReadyToAttack)
-		{
-			Attack();
-		}
-		else
-		{
-			ReadyAttack(DeltaSeconds);
-		}
-	}
 }
 
 void AEnemyBase::Attack()
@@ -123,6 +69,28 @@ void AEnemyBase::Release()
 	RightHandMesh->SetRelativeLocation(FVector(AttackDistance, 0, 0));
 }
 
+void AEnemyBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bIsStun) return;
+
+	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
+	
+	// 공격 중인 경우
+	if (bIsAttack)
+	{
+		//HandZeroPoint->AddLocalRotation(FRotator(AttackSpeed * DeltaSeconds,0,0));
+
+		PitchRotator.Pitch += DeltaSeconds * AttackSpeed;
+
+		if (PitchRotator.Pitch <= AttackEndPitchRotation)
+		{
+			EndAttack();
+		}
+	}
+}
+
 bool AEnemyBase::IsDefence()
 {
 	return bIsDefence;
@@ -143,10 +111,6 @@ void AEnemyBase::EndAttack()
 	PitchRotator.Pitch = AttackStartPitchRotation;
 
 	if (RollRotator.Roll >= 360.f) RollRotator.Roll -= 360.f;
-
-	TargetRollRotation = FMath::RandRange(0.0f, 359.0f);
-	
-	Defence();
 }
 
 bool AEnemyBase::RotateHand(float DeltaSeconds)
