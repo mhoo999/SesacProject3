@@ -61,4 +61,6 @@ public:
 	void StopDefence();
 
 	virtual void StartStun() override;
+
+	virtual FVector GetAttackAngle() override;
 };

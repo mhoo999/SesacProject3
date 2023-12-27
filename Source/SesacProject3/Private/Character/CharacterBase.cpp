@@ -78,26 +78,12 @@ void ACharacterBase::FailAttack()
 
 void ACharacterBase::MoveVertical(float VerticalDistance)
 {
-	// 이동하고자 하는 Location
-	FVector TargetLocation(VerticalDistance, 0, 0);
-	float DeltaTime = GetWorld()->GetDeltaSeconds();
-
-	// 현재 위치와 새 위치를 보간하여 새 위치를 계산
-	FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaTime, VerticalInterpSpeed);
-	// 계산 된 위치로 이동
-	SetActorLocation(NewLocation);
+	SetActorLocation(GetActorLocation() + GetActorForwardVector() * VerticalDistance);
 }
 
 void ACharacterBase::MoveHorizontal()
 {
-	// 이동하고자 하는 Location
-	FVector TargetLocation(0, MoveHorizontalDistance, 0);
-	float DeltaTime = GetWorld()->GetDeltaSeconds();
-
-	// 현재 위치와 새 위치를 보간하여 새 위치를 계산
-	FVector NewLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaTime, MoveHorizontalInterpSpeed);
-	// 계산 된 위치로 이동
-	SetActorLocation(NewLocation);
+	SetActorLocation(GetActorLocation() + GetActorRightVector() * MoveHorizontalDistance);
 }
 
 void ACharacterBase::StartStun()
