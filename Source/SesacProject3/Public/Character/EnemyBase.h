@@ -17,6 +17,8 @@ class SESACPROJECT3_API AEnemyBase : public ACharacterBase
 
 public:
 	AEnemyBase();
+
+	virtual void StartStun() override;
 	
 	virtual void BeginPlay() override;
 	virtual bool IsAttack() override;
@@ -41,6 +43,12 @@ private:
 	void ReadyAttack(float DeltaSeconds);
 
 private:
+	// Stun
+	UPROPERTY(EditDefaultsOnly, Meta = (AllowPrivateAccess))
+	float MaxStunTime;
+	UPROPERTY(Meta = (AllowPrivateAccess))
+	float CurrentStunTime;
+	
 	// Player
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	ACharacterBase* EnemyPlayer;
