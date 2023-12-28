@@ -34,8 +34,11 @@ public:
 	void SetAttackMode(bool bIsNewAttackMode);
 	void SetDefenceMode(bool bIsNewDefenceMode);
 
-	// Todo FailAttack 을 오버라이딩해서 Enemy에 맞게 변형 필요
-	// virtual void FailAttack() override;
+	UFUNCTION(BlueprintCallable)
+	FVector GetWeaponEndLocation() const;
+
+	UFUNCTION()
+	FVector GetWeaponAngleVector();
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -61,4 +64,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	USceneComponent* WeaponEndLocation;
+
+	FVector OldLocation;
+	FVector CurrentLocation;
+
+
+	FVector WeaponAngleVector;
 };

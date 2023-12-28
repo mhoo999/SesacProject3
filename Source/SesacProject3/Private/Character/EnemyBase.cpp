@@ -27,12 +27,14 @@ void AEnemyBase::BeginPlay()
 	//RightHandMesh->SetRelativeLocation(HandZeroLocation + FVector(0, 0, AttackDistance));
 
 	// Spawn Sword
-	Weapon = GetWorld()->SpawnActor<AWeaponBase>();
-
-	Weapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	Weapon->SetActorRelativeLocation(FVector(33, 21, -3));
-	Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
-	Weapon->SetOwningPlayer(this);
+	if (WeaponClass)
+	{
+		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
+        Weapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
+        Weapon->SetActorRelativeLocation(FVector(33, 21, -3));
+        Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
+        Weapon->SetOwningPlayer(this);
+	}
 
 	EnemyPlayer = Cast<ACharacterBase>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 	// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::BeginPlay) EnemyPlayer Name : %s"), *EnemyPlayer->GetActorNameOrLabel());
@@ -118,7 +120,7 @@ bool AEnemyBase::RotateHand(float DeltaSeconds)
 	if (RollRotator.Roll > TargetRollRotation) RollRotator.Roll -= DeltaSeconds * HandRotateSpeed;
 	else if (RollRotator.Roll < TargetRollRotation) RollRotator.Roll += DeltaSeconds * HandRotateSpeed;
 
-	if (FMath::RandRange(0.0f, 100.0f) <= 5.0f)
+	if (FMath::RandRange(0.0f, 100.0f) <= 1.0f)
 	{
 		TargetRollRotation *= -1;
 	}
