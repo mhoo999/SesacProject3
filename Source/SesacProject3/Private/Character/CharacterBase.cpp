@@ -3,6 +3,8 @@
 
 #include "Character/CharacterBase.h"
 
+#include "FrameTypes.h"
+
 ACharacterBase::ACharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,6 +24,16 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bMove)
+	{
+		MoveTime += DeltaTime;
+	}
+	
+	if (MoveTime > 1)
+	{
+		bMove = false;
+		MoveTime = 0.0f;
+	}
 }
 
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -83,11 +95,15 @@ void ACharacterBase::FailAttack()
 
 void ACharacterBase::MoveVertical(float VerticalDistance)
 {
-	SetActorLocation(GetActorLocation() + GetActorForwardVector() * VerticalDistance);
+	bMove = true;
+	FVector Destination = GetActorLocation() + GetActorForwardVector() * VerticalDistance;
+	FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
+	SetActorLocation(NewLocation);
 }
 
 void ACharacterBase::MoveHorizontal()
 {
+	bMove = true;
 	SetActorLocation(GetActorLocation() + GetActorRightVector() * MoveHorizontalDistance);
 }
 

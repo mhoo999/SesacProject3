@@ -66,6 +66,10 @@ protected:
 
 	FTimerHandle StunTimerHandler;
 
+	float MoveTime = 0.0f;
+
+	bool bMove = false;
+
 public:
 	// 방어 상태를 반환하는 함수
 	virtual bool IsDefence();
