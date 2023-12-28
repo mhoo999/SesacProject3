@@ -8,6 +8,7 @@
 #include "Components/TextRenderComponent.h"
 #include "DSP/Chorus.h"
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Weapon/WeaponBase.h"
@@ -62,6 +63,17 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentLocation = RightController->GetComponentLocation();
+
+	// 입력 매핑 설정하기
+	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	{
+		UEnhancedInputLocalPlayerSubsystem* SubSys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
+
+		if (SubSys != nullptr && IMC != nullptr)
+		{
+			SubSys->AddMappingContext(IMC, 0);
+		}
+	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -75,7 +87,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 #pragma region (CurrentLoc - OldLoc) / DeltaTime
 
-	UE_LOG(LogTemp, Warning, TEXT("APlayerCharacter::Tick) CurrentTime : %.2f"), CurrentTime);
+	// UE_LOG(LogTemp, Warning, TEXT("APlayerCharacter::Tick) CurrentTime : %.2f"), CurrentTime);
 	CurrentTime += DeltaTime;
 
 	// 과거 위치와 현재 위치가 같을 경우, 과거 위치의 값을 구하지 않음
@@ -162,7 +174,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent != nullptr && bIsStun == false)
 	{
-		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Triggered, this, &APlayerCharacter::StartDefence);
+		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Started, this, &APlayerCharacter::StartDefence);
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
 	}
 }
@@ -189,18 +201,28 @@ void APlayerCharacter::StopAttack()
 
 bool APlayerCharacter::IsAttack()
 {
-	LeftLog->SetText(FText::FromString(bIsAttack ? TEXT("true") : TEXT("false")));
 	return bIsAttack;
 }
 
 void APlayerCharacter::StartDefence()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Defence On"));
+	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
+	Weapon->SetDefenceMode(true);
 }
 
 void APlayerCharacter::StopDefence()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Defence OFF"));
+	LeftLog->SetText(FText::FromString(TEXT("Defence:OFF")));
 	bIsDefence = false;
+	Weapon->SetDefenceMode(false);
+}
+
+bool APlayerCharacter::IsDefence()
+{
+	return bIsDefence;
 }
 
 void APlayerCharacter::StartStun()
