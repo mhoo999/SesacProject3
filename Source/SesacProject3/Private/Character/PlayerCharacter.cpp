@@ -83,6 +83,21 @@ void APlayerCharacter::Tick(float DeltaTime)
 	// {
 	// 	OldLocation = RightController->GetComponentLocation();
 	// }
+
+	FRotator RelativeRotation = FTransform(GetActorRotation()).InverseTransformRotation(RightController->GetComponentRotation().Quaternion()).Rotator();
+	
+	FVector DebugVector = FVector(1, 0, 0) * 100.f;
+
+	DebugVector = RelativeRotation.RotateVector(DebugVector);
+
+	DebugVector.X = 0.0f;
+
+	DrawDebugLine(GetWorld(), RightController->GetComponentLocation(), RightController->GetComponentLocation() + FTransform(GetActorRotation()).TransformPosition(DebugVector), FColor::Emerald);
+
+	if (RightController)
+	{
+		RightLog->SetText(FText::FromString(FString::Printf(TEXT("Rotation : %s"), *RelativeRotation.ToString())));
+	}
 	
 	if (CurrentTime >= AttackTimer)
 	{
@@ -97,7 +112,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		float MaxValue = RightHandMesh->GetRightVector().Dot(Velocity);
 
 		// Set RightLog Text
-		RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %.2f"), MaxValue)));
+		// RightLog->SetText(FText::FromString(FString::Printf(TEXT("Velocity : %.2f"), MaxValue)));
 		
 		// MaxValue 값이 100 이상, bISAttack이 false일 경우, StartAttack()을 실행
 		if (MaxValue <= AttackSuccessValue && bIsAttack == false && bIsDefence == false)
