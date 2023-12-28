@@ -67,6 +67,8 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		if (Character == OwningPlayer) return;
 
+		UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) bFromSweep : %d"), bFromSweep);	
+
 		// 방어든 공격이든 상관없이 검의 충돌 처리를 꺼줌 (언제 켜줄지가 문제)
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			
