@@ -9,6 +9,7 @@
 class UTextRenderComponent;
 class UMotionControllerComponent;
 class UCameraComponent;
+class UInputMappingContext;
 
 UCLASS()
 class SESACPROJECT3_API APlayerCharacter : public ACharacterBase
@@ -45,9 +46,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* RightLog;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RightTrigger;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* IMC;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	float AttackSuccessValue = -1000.0f;
 
@@ -68,7 +72,8 @@ public:
 
 	void StartDefence();
 	void StopDefence();
-
+	virtual bool IsDefence() override;
+	
 	virtual void StartStun() override;
 	virtual void StopStun() override;
 
