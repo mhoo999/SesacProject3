@@ -3,6 +3,13 @@
 
 #include "Character/EnemyAI.h"
 
+void AEnemyAI::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Defence();
+}
+
 void AEnemyAI::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);

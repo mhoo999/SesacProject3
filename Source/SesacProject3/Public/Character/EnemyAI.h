@@ -15,6 +15,7 @@ class SESACPROJECT3_API AEnemyAI : public AEnemyBase
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:

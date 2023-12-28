@@ -46,6 +46,10 @@ protected:
 	// Player
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	ACharacterBase* EnemyPlayer;
+
+	// Weapon
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeaponBase> WeaponClass;
 	
 	// Attack
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
