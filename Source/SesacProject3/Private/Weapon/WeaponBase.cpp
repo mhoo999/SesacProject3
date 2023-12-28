@@ -3,12 +3,12 @@
 
 #include "Weapon/WeaponBase.h"
 
-#include "InterchangeResult.h"
+#include <Kismet/KismetMathLibrary.h>
+
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 #include "Character/CharacterBase.h"
-#include "Character/EnemyBase.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -24,6 +24,10 @@ AWeaponBase::AWeaponBase()
 	SetRootComponent(BoxComponent);	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
+	WeaponMesh->SetCollisionProfileName(FName("NoCollision"));
+
+
+	
 	BashEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BashEffect"));
 	BashEffect->SetupAttachment(WeaponMesh);
 
@@ -45,11 +49,10 @@ void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// OldLocation = CurrentLocation;
+	// CurrentLocation = WeaponEndLocation->GetComponentLocation();
 
-	if (bIsDefenceMode)
-	{
-		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + (Cast<AEnemyBase>(OwningPlayer)->GetAttackAngle() * 300.0f), FColor::Purple);
-	}
+	GetWeaponAngleVector();
 }
 
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -67,27 +70,23 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		if (Character == OwningPlayer) return;
 
-		UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) bFromSweep : %d"), bFromSweep);	
-
 		// 방어든 공격이든 상관없이 검의 충돌 처리를 꺼줌 (언제 켜줄지가 문제)
 		BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			
 		if (Character->IsDefence())
 		{	
-			float Value = OwningPlayer->GetAttackAngle().Dot(Character->GetAttackAngle());
+			float Value = WeaponAngleVector.GetSafeNormal().Dot(Character->GetWeapon()->GetWeaponAngleVector().GetSafeNormal());
 			Value = Value >= 0.0f ? Value : -Value; 
 			// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Dot Result : %f"), Value);
 			if (Value <= DefenceSuccessValue)
 			{
+				//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 3.0f, 0, 3.0f);
+				//DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 				// Todo : Fail 시 상대방이 따라오는 기능 필요
 				OwningPlayer->FailAttack();
 				OwningPlayer->StartStun();
 				Character->SuccessDefence();
-				// if (AEnemyBase* Enemy = Cast<AEnemyBase>(Character))
-				// {
-				// 	UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Attack When Defence Successed"));
-				// 	Enemy->Attack();
-				// }
+				
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
 			}
@@ -96,6 +95,9 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Attack : %f"), Value);
 			}
 		}
+
+		// DrawDebugLine(GetWorld(), WeaponEndLocation->GetComponentLocation(), WeaponEndLocation->GetComponentLocation() + DeltaVector * 100.0f, FColor::Magenta, false, 3.0f, 0, 3.0f);
+		// DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
 		// Todo : Move 기능이 약간 이상함
 		Character->ReceiveDamage();
@@ -118,4 +120,59 @@ void AWeaponBase::SetAttackMode(bool bIsNewAttackMode)
 void AWeaponBase::SetDefenceMode(bool bIsNewDefenceMode)
 {
 	bIsDefenceMode = bIsNewDefenceMode;
+}
+
+FVector AWeaponBase::GetWeaponEndLocation() const
+{
+	return WeaponEndLocation->GetComponentLocation();
+}
+
+FVector AWeaponBase::GetWeaponAngleVector()
+{
+	// Rotation Part
+		
+	WeaponAngleVector = GetActorLocation() - WeaponEndLocation->GetComponentLocation();
+	WeaponAngleVector.Normalize();
+	//
+	FVector StartLocation = WeaponEndLocation->GetComponentLocation();
+	FVector EndLocation = StartLocation + (WeaponAngleVector * 100.0f);
+
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, EndLocation);
+
+	FRotator TransformedRotation = FTransform(OwningPlayer->GetActorRotation()).InverseTransformRotation(LookAtRotation.Quaternion()).Rotator();
+
+	WeaponAngleVector = FVector(1, 0, 0);
+	WeaponAngleVector = TransformedRotation.RotateVector(WeaponAngleVector);
+	WeaponAngleVector *= 100.0f;
+	WeaponAngleVector.X = 0.0f;
+
+	WeaponAngleVector = FTransform(OwningPlayer->GetActorRotation()).TransformPosition(WeaponAngleVector);
+
+	DrawDebugLine(GetWorld(), StartLocation, StartLocation + WeaponAngleVector * 100.0f, FColor::Blue, false, 0, 0, 3.0f);
+	
+	//
+	// // 시작점에서 끝점을 바라보기 위한 회전값 (월드좌표 기준)
+	// 
+	//
+	// // 월드좌표 기준 회전값을 로컬 좌표로 바꾼다
+	// 
+	//
+	// // 플레이어의 앞방향 벡터 (월드좌표 기준)
+	// 
+	//
+	// // 앞방향 벡터를 로컬좌표 기준 회전값으로 회전시킴 (야직 월드좌표)
+	// 
+	//
+	// // 벡터에 길이를 100으로 늘림
+	// 
+	//
+	// // 벡터의 X값을 0으로 (앞방향 무시, 위와 옆방향만 쓰겠다)
+	// 
+	//
+	// // 해당 해당 벡터를 플레이어의 월드 회전값 기준으로 다시 옮김 (왜지?)
+	// 
+	//
+	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) LookAtRotation : %s, TransformedRotation : %s"), *LookAtRotation.ToString(), *TransformedRotation.ToString());
+	
+	return WeaponAngleVector;
 }
