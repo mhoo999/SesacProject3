@@ -98,17 +98,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	FRotator RelativeRotation = FTransform(GetActorRotation()).InverseTransformRotation(RightController->GetComponentRotation().Quaternion()).Rotator();
 	
-	FVector DebugVector = FVector(1, 0, 0) * 100.f;
-
-	DebugVector = RelativeRotation.RotateVector(DebugVector);
-
-	DebugVector.X = 0.0f;
-
-	DrawDebugLine(GetWorld(), RightController->GetComponentLocation(), RightController->GetComponentLocation() + FTransform(GetActorRotation()).TransformPosition(DebugVector), FColor::Emerald);
+	// FVector DebugVector = FVector(1, 0, 0) * 100.f;
+	// DebugVector = RelativeRotation.RotateVector(DebugVector);
+	// DebugVector.X = 0.0f;
+	// DrawDebugLine(GetWorld(), RightController->GetComponentLocation(), RightController->GetComponentLocation() + FTransform(GetActorRotation()).TransformPosition(DebugVector), FColor::Emerald);
 
 	if (RightController)
 	{
-		RightLog->SetText(FText::FromString(FString::Printf(TEXT("Rotation : %s"), *RelativeRotation.ToString())));
+		// RightLog->SetText(FText::FromString(FString::Printf(TEXT("Rotation : %s"), *RelativeRotation.ToString())));
 	}
 	
 	if (CurrentTime >= AttackTimer)

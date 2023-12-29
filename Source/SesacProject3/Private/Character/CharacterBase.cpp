@@ -96,8 +96,10 @@ void ACharacterBase::FailAttack()
 void ACharacterBase::MoveVertical(float VerticalDistance)
 {
 	bMove = true;
-	FVector Destination = GetActorLocation() + GetActorForwardVector() * VerticalDistance;
-	FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
+	// FVector Destination = GetActorLocation() + GetActorForwardVector() * VerticalDistance;
+	// FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
+
+	FVector NewLocation = GetActorLocation() + GetActorForwardVector() * VerticalDistance;
 	SetActorLocation(NewLocation);
 }
 
