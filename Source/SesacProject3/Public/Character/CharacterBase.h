@@ -37,25 +37,13 @@ protected:
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	// EMainHand MainHand;
 
-	// 공격 성공시 전진, 피격시 넉백 거리
+	// Vertical(공격 성공, 방어 성공, 피격, 공격 실패) 이동 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float AttackSuccessDistance = 50.f;
-
-	// 방어 성공시 전진, 공격 실패시 넉백 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float DefenceSuccessDistance = 25.f;
-	
-	// Vertical 이동 스피드
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float VerticalInterpSpeed = 5.0f;
+	float MoveDistance = 50.f;
 
 	// Horizontal 이동 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float MoveHorizontalDistance = 50.f;
-
-	// Horizontal 이동 스피드
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float MoveHorizontalInterpSpeed = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float StunTime = 1.0f;
@@ -66,9 +54,9 @@ protected:
 
 	FTimerHandle StunTimerHandler;
 
-	float MoveTime = 0.0f;
-
 	bool bMove = false;
+	float MoveTime = 0.0f;
+	FVector Destination;
 
 public:
 	// 방어 상태를 반환하는 함수
@@ -86,17 +74,17 @@ public:
 	// 공격 성공 시, 전진
 	void SuccessAttack();
 	
-	// 피격 시, 넉백
-	void ReceiveDamage();
-	
 	// 방어 성공 시, 전진
 	void SuccessDefence();
+
+	// 피격 시, 넉백
+	void ReceiveDamage();
 	
 	// 공격 실패 시(상대 방어 시) 호출, 스턴 + 넉백
 	void FailAttack();
 
-	// Vertical 이동(전진, 넉백)
-	void MoveVertical(float VerticalDistance);
+	// Vertical 이동
+	void MoveVertical(float Distance);
 
 	// 방어 상태일 경우, 검이 향하는 방향으로 Horizontal 이동
 	void MoveHorizontal();

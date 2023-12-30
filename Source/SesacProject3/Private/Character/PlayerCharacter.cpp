@@ -9,7 +9,6 @@
 #include "DSP/Chorus.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Components/CapsuleComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Weapon/WeaponBase.h"
 
@@ -74,6 +73,8 @@ void APlayerCharacter::BeginPlay()
 			SubSys->AddMappingContext(IMC, 0);
 		}
 	}
+
+	CameraComp->SetRelativeLocation(FVector(0, 0, -100));
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
