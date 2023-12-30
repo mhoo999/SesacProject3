@@ -19,7 +19,7 @@ AWeaponBase::AWeaponBase()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetHiddenInGame(false);
-	BoxComponent->SetBoxExtent(FVector(40.f, 2.f, 2.f));
+	BoxComponent->SetBoxExtent(FVector(100.f, 2.f, 2.f));
 	BoxComponent->SetLineThickness(2.0f);
 	SetRootComponent(BoxComponent);	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
@@ -60,7 +60,7 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 {
 	// Todo : 지금 AEnemyBase로 되어있는데 GetAttackAngle 함수를 CharacterBase에 구현 후 CharacterBase로 Cast하도록 바꿔야함
 	
-	UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor : %s"), *OtherActor->GetActorNameOrLabel());
+	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor : %s"), *OtherActor->GetActorNameOrLabel());
 	
 	if (bIsAttackMode == false) return;
 	
@@ -90,18 +90,14 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
 			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Attack : %f"), Value);
-			}
 		}
-
 		// DrawDebugLine(GetWorld(), WeaponEndLocation->GetComponentLocation(), WeaponEndLocation->GetComponentLocation() + DeltaVector * 100.0f, FColor::Magenta, false, 3.0f, 0, 3.0f);
 		// DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
 		// Todo : Move 기능이 약간 이상함
 		Character->ReceiveDamage();
 		OwningPlayer->SuccessAttack();
+		UE_LOG(LogTemp, Warning, TEXT("%s AWeaponBase::OnBoxComponentBeginOverlap) Attack"), *FString::FromInt(GetWorld()->GetRealTimeSeconds()));
 	}
 }
 

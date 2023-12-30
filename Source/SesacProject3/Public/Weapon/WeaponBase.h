@@ -34,6 +34,7 @@ public:
 	void SetAttackMode(bool bIsNewAttackMode);
 	void SetDefenceMode(bool bIsNewDefenceMode);
 
+	// Weapon Trailer Effect 할 때 필요할지도? (그때도 필요 없으면 지우기)
 	UFUNCTION(BlueprintCallable)
 	FVector GetWeaponEndLocation() const;
 

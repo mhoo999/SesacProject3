@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "MyGameModeBase.generated.h"
 
+class ACharacterBase;
 /**
  * 
  */
