@@ -31,7 +31,7 @@ void AEnemyBase::BeginPlay()
 	{
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
         Weapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
-        Weapon->SetActorRelativeLocation(FVector(33, 21, -3));
+        Weapon->SetActorRelativeLocation(FVector(90, 40, -3));
         Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
         Weapon->SetOwningPlayer(this);
 	}
@@ -120,10 +120,11 @@ bool AEnemyBase::RotateHand(float DeltaSeconds)
 	if (RollRotator.Roll > TargetRollRotation) RollRotator.Roll -= DeltaSeconds * HandRotateSpeed;
 	else if (RollRotator.Roll < TargetRollRotation) RollRotator.Roll += DeltaSeconds * HandRotateSpeed;
 
-	if (FMath::RandRange(0.0f, 100.0f) <= 1.0f)
-	{
-		TargetRollRotation *= -1;
-	}
+	// 일정 확률로 각도를 반전시킴
+	// if (FMath::RandRange(0.0f, 100.0f) <= 1.0f)
+	// {
+	// 	TargetRollRotation *= -1;
+	// }
 
 	if (FMath::Abs(RollRotator.Roll - TargetRollRotation) <= RotationTolerance)
 	{
