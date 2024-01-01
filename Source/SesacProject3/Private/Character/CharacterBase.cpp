@@ -4,6 +4,7 @@
 #include "Character/CharacterBase.h"
 
 #include "MyGameStateBase.h"
+#include "Weapon/WeaponBase.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -17,14 +18,21 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);	
+	GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
+
+	// 타겟 설정(내가 아닌 world 내 Character)
+	// Target = 
 }
 
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// 타겟을 응시하는 함수
+	GazeAtTarget();
 	
-	if (bMove) // 공격 성공, 방어 성공
+	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
+	if (bMove)
 	{
 		MoveTime += DeltaTime;
 		
@@ -68,18 +76,25 @@ bool ACharacterBase::IsAttack()
 // 공격 성공
 void ACharacterBase::SuccessAttack()
 {
+	// 앞으로 MoveDistance 만큼 이동
 	MoveVertical(MoveDistance);
 }
 
 // 방어 성공
 void ACharacterBase::SuccessDefence()
 {
+	// 앞으로 MoveDistance 만큼 이동
 	MoveVertical(MoveDistance);
 }
 
 // 피격
 void ACharacterBase::ReceiveDamage()
 {
+	// 못 막았을 때, 방어 상태가 풀리도록
+	bIsDefence = false;
+	Weapon->SetDefenceMode(false);
+
+	// 뒤로 -MoveDistance 만큼 이동
 	MoveVertical(MoveDistance * -1);
 	
 	if (bIsStun)
@@ -91,6 +106,7 @@ void ACharacterBase::ReceiveDamage()
 // 공격 실패
 void ACharacterBase::FailAttack()
 {
+	// 뒤로 -MoveDistance 만큼 이동
 	MoveVertical(MoveDistance * -1);
 	
 	StartStun();
@@ -100,15 +116,18 @@ void ACharacterBase::MoveVertical(float Distance)
 {
 	Destination = GetActorLocation() + GetActorForwardVector() * Distance;
 	bMove = true;
-	
-	UE_LOG(LogTemp, Warning, TEXT("CurrentLocation : %s"), *GetActorLocation().ToString());
-	UE_LOG(LogTemp, Warning, TEXT("Destination : %s"), *Destination.ToString());
 }
 
-void ACharacterBase::MoveHorizontal()
+void ACharacterBase::MoveHorizontal(float SwordAngle)
 {
+	// 검의 벡터 값을 받아서 0-1값으로 정규화
+	float NewAngle = SwordAngle;
+
+	// 정규화된 값을 이용해서 새로운 Distance 도출
+	float NewDistance = MoveHorizontalDistance * NewAngle;
 	
-	// SetActorLocation(GetActorLocation() + GetActorRightVector() * MoveHorizontalDistance);
+	Destination = GetActorLocation() + GetActorRightVector() * NewDistance;
+	bMove = true;
 }
 
 void ACharacterBase::StartStun()
@@ -139,4 +158,15 @@ AWeaponBase* ACharacterBase::GetWeapon()
 FVector ACharacterBase::GetAttackAngle()
 {
 	return FVector();
+}
+
+void ACharacterBase::GazeAtTarget()
+{
+	// 목표 지점에서 현재 위치로 향하는 벡터를 계산
+	FVector Direction = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+
+	// 계산된 방향 벡터를 Rotator로 변환
+	FRotator TargetRotator = Direction.Rotation();
+	
+	SetActorRotation(TargetRotator);
 }

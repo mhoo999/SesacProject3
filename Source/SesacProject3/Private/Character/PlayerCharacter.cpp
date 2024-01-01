@@ -163,6 +163,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}*/
 #pragma endregion
 
+	// UE_LOG(LogTemp, Warning, TEXT("CurrentLocation : %s"), *GetActorLocation().ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("Destination : %s"), *Destination.ToString());
+	
+	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Roll : %f"), RightController->GetComponentRotation().Roll)));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -172,7 +176,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (EnhancedInputComponent != nullptr && bIsStun == false)
 	{
-		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Started, this, &APlayerCharacter::StartDefence);
+		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Triggered, this, &APlayerCharacter::StartDefence);
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
 	}
 }
