@@ -82,10 +82,10 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 			{
 				//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 3.0f, 0, 3.0f);
 				//DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
-				// Todo : Fail 시 상대방이 따라오는 기능 필요
 				OwningPlayer->FailAttack();
 				OwningPlayer->StartStun();
 				Character->SuccessDefence();
+				// Todo : Character 가 SuccessDefence() 했을 때, Weapon 의 SuccessDefence 호출 
 				
 				UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Defence : %f"), Value);
 				return;
@@ -94,7 +94,7 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		// DrawDebugLine(GetWorld(), WeaponEndLocation->GetComponentLocation(), WeaponEndLocation->GetComponentLocation() + DeltaVector * 100.0f, FColor::Magenta, false, 3.0f, 0, 3.0f);
 		// DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
-		// Todo : Move 기능이 약간 이상함
+		// Todo : ReceiveDamage 할 때 this->GetKnockbackDistance() 를 받아서 쓸 것
 		Character->ReceiveDamage();
 		OwningPlayer->SuccessAttack();
 		UE_LOG(LogTemp, Warning, TEXT("%s AWeaponBase::OnBoxComponentBeginOverlap) Attack"), *FString::FromInt(GetWorld()->GetRealTimeSeconds()));
@@ -171,4 +171,12 @@ FVector AWeaponBase::GetWeaponAngleVector()
 	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) LookAtRotation : %s, TransformedRotation : %s"), *LookAtRotation.ToString(), *TransformedRotation.ToString());
 	
 	return WeaponAngleVector;
+}
+
+float AWeaponBase::GetKnockbackDistance()
+{
+	return KnockbackDistance;
+}
+void AWeaponBase::SuccessDefence()
+{
 }

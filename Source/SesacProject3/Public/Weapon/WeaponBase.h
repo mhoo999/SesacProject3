@@ -41,6 +41,10 @@ public:
 	UFUNCTION()
 	FVector GetWeaponAngleVector();
 
+	virtual float GetKnockbackDistance();
+
+	virtual void SuccessDefence();
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	float KnockbackDistance;
