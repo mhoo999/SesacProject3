@@ -166,7 +166,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	// UE_LOG(LogTemp, Warning, TEXT("CurrentLocation : %s"), *GetActorLocation().ToString());
 	// UE_LOG(LogTemp, Warning, TEXT("Destination : %s"), *Destination.ToString());
 	
-	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Roll : %f"), RightController->GetComponentRotation().Roll)));
+	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Roll : %.2f"), RightController->GetComponentRotation().Roll)));
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -212,6 +212,8 @@ void APlayerCharacter::StartDefence()
 	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
 	Weapon->SetDefenceMode(true);
+
+	MoveHorizontal(RightController->GetComponentRotation().Roll);
 }
 
 void APlayerCharacter::StopDefence()
@@ -220,6 +222,8 @@ void APlayerCharacter::StopDefence()
 	LeftLog->SetText(FText::FromString(TEXT("Defence:OFF")));
 	bIsDefence = false;
 	Weapon->SetDefenceMode(false);
+
+	bMove = false;
 }
 
 bool APlayerCharacter::IsDefence()
