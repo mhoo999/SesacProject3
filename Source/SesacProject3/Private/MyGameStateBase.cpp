@@ -30,3 +30,10 @@ void AMyGameStateBase::SetLoseCharacter(ACharacterBase* NewLoseCharacter)
 		UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) Player2 Lose"));
 	}
 }
+
+ACharacterBase* AMyGameStateBase::GetOtherCharacter(ACharacterBase* CurrentCharacter)
+{
+	if (CurrentCharacter == Player1) return Player2;
+	
+	return Player1;
+}

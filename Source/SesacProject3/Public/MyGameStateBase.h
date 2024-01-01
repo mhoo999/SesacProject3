@@ -17,9 +17,12 @@ class SESACPROJECT3_API AMyGameStateBase : public AGameStateBase
 public:
 	void AddPlayer(ACharacterBase* NewPlayer);
 	void SetLoseCharacter(ACharacterBase* NewLoseCharacter);
+
+	ACharacterBase* GetOtherCharacter(ACharacterBase* CurrentCharacter);
+	
 private:
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	ACharacterBase* Player1;
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	ACharacterBase* Player2; 
+	ACharacterBase* Player2;
 };
