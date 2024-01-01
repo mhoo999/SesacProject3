@@ -43,7 +43,7 @@ protected:
 
 	// Horizontal 이동 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float MoveHorizontalDistance = 50.f;
+	float MoveHorizontalDistance = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float StunTime = 1.0f;

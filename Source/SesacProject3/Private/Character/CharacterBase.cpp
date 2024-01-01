@@ -29,7 +29,7 @@ void ACharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// 타겟을 응시하는 함수
-	GazeAtTarget();
+	// GazeAtTarget();
 	
 	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
 	if (bMove)
@@ -120,8 +120,11 @@ void ACharacterBase::MoveVertical(float Distance)
 
 void ACharacterBase::MoveHorizontal(float SwordAngle)
 {
+	float MaxValue = 180.0f;
+	float MinValue = 0.0f;
+	
 	// 검의 벡터 값을 받아서 0-1값으로 정규화
-	float NewAngle = SwordAngle;
+	float NewAngle = (SwordAngle - MinValue) / (MaxValue - MinValue);
 
 	// 정규화된 값을 이용해서 새로운 Distance 도출
 	float NewDistance = MoveHorizontalDistance * NewAngle;
