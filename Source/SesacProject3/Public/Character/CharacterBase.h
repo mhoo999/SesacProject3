@@ -58,6 +58,8 @@ protected:
 	float MoveTime = 0.0f;
 	FVector Destination;
 
+	ACharacterBase* Target;
+
 public:
 	// 방어 상태를 반환하는 함수
 	virtual bool IsDefence();
@@ -87,7 +89,7 @@ public:
 	void MoveVertical(float Distance);
 
 	// 방어 상태일 경우, 검이 향하는 방향으로 Horizontal 이동
-	void MoveHorizontal();
+	void MoveHorizontal(float SwordAngle);
 
 	// 스턴 발생 함수
 	virtual void StartStun();
@@ -97,4 +99,6 @@ public:
 	virtual AWeaponBase* GetWeapon();
 
 	virtual FVector GetAttackAngle();
+
+	void GazeAtTarget();
 };
