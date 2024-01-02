@@ -50,11 +50,11 @@ void UVRPlayerAnimComp::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		bodyAnim->HeadRotation = Player->CameraComp->GetComponentRotation();
 
 
-		bodyAnim->LeftFootLocation = Player->LeftController->GetComponentLocation();
-		bodyAnim->LeftFootRotation = Player->LeftController->GetComponentRotation();
-
-		bodyAnim->RightFootLocation = Player->RightController->GetComponentLocation();
-		bodyAnim->RightFootRotation = Player->RightController->GetComponentRotation();
+		//bodyAnim->LeftFootLocation = Player->LeftController->GetComponentLocation();
+		//bodyAnim->LeftFootRotation = Player->LeftController->GetComponentRotation();
+		//
+		//bodyAnim->RightFootLocation = Player->RightController->GetComponentLocation();
+		//bodyAnim->RightFootRotation = Player->RightController->GetComponentRotation();
 	}
 
 
