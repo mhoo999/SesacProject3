@@ -77,5 +77,7 @@ public:
 	virtual void StartStun() override;
 	virtual void StopStun() override;
 
+	virtual void GazeAtTarget() override;
+
 	virtual FVector GetAttackAngle() override;
 };

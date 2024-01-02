@@ -59,6 +59,7 @@ protected:
 	FVector Destination;
 
 	ACharacterBase* Target;
+	FTimerHandle FindTargetTimerHande;
 
 public:
 	// 방어 상태를 반환하는 함수
@@ -100,5 +101,7 @@ public:
 
 	virtual FVector GetAttackAngle();
 
-	void GazeAtTarget();
+	virtual void GazeAtTarget();
+
+	void SetMoveDistance(float NewDistance);
 };

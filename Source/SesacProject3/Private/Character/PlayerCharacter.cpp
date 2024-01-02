@@ -80,6 +80,12 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	// 타겟을 응시하는 함수
+	if (Target != nullptr)
+	{
+		GazeAtTarget();
+	}
 
 	if (bIsAttack)
 	{
@@ -241,6 +247,17 @@ void APlayerCharacter::StartStun()
 void APlayerCharacter::StopStun()
 {
 	Super::StopStun();
+}
+
+void APlayerCharacter::GazeAtTarget()
+{
+	// 목표 지점에서 현재 위치로 향하는 벡터를 계산
+	FVector Direction = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+
+	// 계산된 방향 벡터를 Rotator로 변환
+	FRotator TargetRotator = Direction.Rotation();
+	
+	SetActorRotation(TargetRotator);
 }
 
 FVector APlayerCharacter::GetAttackAngle()
