@@ -51,7 +51,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UBoxComponent* BoxComponent;
 	UPROPERTY(EditDefaultsOnly)
-	UStaticMeshComponent* WeaponMesh;
+	USkeletalMeshComponent* SwordMesh;
 	UPROPERTY(EditDefaultsOnly)
 	UParticleSystemComponent* BashEffect;
 

@@ -4,6 +4,7 @@
 #include "Actor/RoundBoxActor.h"
 
 #include "InterchangeResult.h"
+#include "MyGameStateBase.h"
 #include "Character/CharacterBase.h"
 #include "Components/BoxComponent.h"
 
@@ -37,6 +38,6 @@ void ARoundBoxActor::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedC
 	// UE_LOG(LogTemp, Warning, TEXT("ARoundBoxActor::OnBoxComponentBeginOverlap) Overlapped Actor : %s"), *OtherActor->GetActorNameOrLabel());
 	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
 	{
-		
+		GetWorld()->GetGameState<AMyGameStateBase>()->SetLoseCharacter(Character);
 	}
 }

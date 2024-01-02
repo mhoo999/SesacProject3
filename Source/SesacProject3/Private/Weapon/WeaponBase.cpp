@@ -4,10 +4,10 @@
 #include "Weapon/WeaponBase.h"
 
 #include <Kismet/KismetMathLibrary.h>
+#include <Components/BoxComponent.h>
+#include <Particles/ParticleSystemComponent.h>
 
-#include "Components/BoxComponent.h"
-#include "Particles/ParticleSystemComponent.h"
-
+#include "MyGameStateBase.h"
 #include "Character/CharacterBase.h"
 
 // Sets default values
@@ -22,14 +22,13 @@ AWeaponBase::AWeaponBase()
 	BoxComponent->SetBoxExtent(FVector(100.f, 2.f, 2.f));
 	BoxComponent->SetLineThickness(2.0f);
 	SetRootComponent(BoxComponent);	
-	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetupAttachment(RootComponent);
-	WeaponMesh->SetCollisionProfileName(FName("NoCollision"));
 
-
+	SwordMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SwordMesh"));
+	SwordMesh->SetupAttachment(RootComponent);
+	SwordMesh->SetCollisionProfileName(FName("NoCollision"));
 	
 	BashEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BashEffect"));
-	BashEffect->SetupAttachment(WeaponMesh);
+	BashEffect->SetupAttachment(SwordMesh);
 
 	WeaponEndLocation = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponEndLocation"));
 	WeaponEndLocation->SetupAttachment(RootComponent);
@@ -58,11 +57,7 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Todo : 지금 AEnemyBase로 되어있는데 GetAttackAngle 함수를 CharacterBase에 구현 후 CharacterBase로 Cast하도록 바꿔야함
-	
-	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap) Overlapped Actor : %s"), *OtherActor->GetActorNameOrLabel());
-	
-	if (bIsAttackMode == false) return;
+	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false || bIsAttackMode == false) return;
 	
 	
 	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap"));
@@ -95,6 +90,7 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		// DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
 		// Todo : ReceiveDamage 할 때 this->GetKnockbackDistance() 를 받아서 쓸 것
+		float CurrentKnockbackDistance = GetKnockbackDistance();
 		Character->ReceiveDamage();
 		OwningPlayer->SuccessAttack();
 		UE_LOG(LogTemp, Warning, TEXT("%s AWeaponBase::OnBoxComponentBeginOverlap) Attack"), *FString::FromInt(GetWorld()->GetRealTimeSeconds()));
