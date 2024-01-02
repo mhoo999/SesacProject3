@@ -9,6 +9,7 @@
 
 #include "MyGameStateBase.h"
 #include "Character/CharacterBase.h"
+#include "Character/EnemyBase.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -139,6 +140,11 @@ FVector AWeaponBase::GetWeaponAngleVector()
 	WeaponAngleVector.X = 0.0f;
 
 	WeaponAngleVector = FTransform(OwningPlayer->GetActorRotation()).TransformPosition(WeaponAngleVector);
+
+	if (Cast<AEnemyBase>(OwningPlayer))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::GetWeaponAngleVector) LookAtRotation : %s"), *UKismetMathLibrary::FindLookAtRotation(StartLocation, StartLocation + WeaponAngleVector).ToString());
+	}
 
 	DrawDebugLine(GetWorld(), StartLocation, StartLocation + WeaponAngleVector * 100.0f, FColor::Blue, false, 0, 0, 3.0f);
 	
