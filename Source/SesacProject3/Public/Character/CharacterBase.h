@@ -46,7 +46,7 @@ protected:
 	float MoveHorizontalDistance = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float StunTime = 30.0f;
+	float StunTime = 2.0f;
 	
 	bool bIsStun = false;
 
