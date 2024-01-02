@@ -29,16 +29,17 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* CameraComp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* HMDComp;
 
+	/*
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComp;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UMotionControllerComponent* LeftController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	UMotionControllerComponent* RightController;
+	UMotionControllerComponent* RightController;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* LeftLog;
@@ -57,6 +58,20 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	float AttackTimer = 0.3f;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* CameraComp;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UMotionControllerComponent* LeftController;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	UMotionControllerComponent* RightController;
+
+	//240102 SY IK Component Ãß°¡
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	class UVRPlayerAnimComp* AnimComp;
 
 	float CurrentTime = 0;
 	
