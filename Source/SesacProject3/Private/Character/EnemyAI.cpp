@@ -3,6 +3,8 @@
 
 #include "Character/EnemyAI.h"
 
+#include "Weapon/WeaponBase.h"
+
 void AEnemyAI::BeginPlay()
 {
 	Super::BeginPlay();
@@ -24,6 +26,8 @@ void AEnemyAI::Tick(float DeltaSeconds)
 		{
 			Attack();
 		}
+		
+		MoveHorizontal(RollRotator.Roll);
 	}
 }
 

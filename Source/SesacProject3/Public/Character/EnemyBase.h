@@ -35,6 +35,8 @@ public:
 	virtual bool IsDefence() override;
 
 	virtual FVector GetAttackAngle() override;
+
+	virtual void GazeAtTarget() override;
 	
 protected:
 	virtual void EndAttack();

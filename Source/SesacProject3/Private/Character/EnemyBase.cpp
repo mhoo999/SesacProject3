@@ -4,6 +4,12 @@
 #include "Character/EnemyBase.h"
 
 #include "Weapon/WeaponBase.h"
+#include "MyGameStateBase.h"
+
+#include <Kismet/KismetMathLibrary.h>
+
+#include "Components/ArrowComponent.h"
+#include "Kismet/KismetNodeHelperLibrary.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -11,6 +17,8 @@ AEnemyBase::AEnemyBase()
 	HandZeroPoint->SetupAttachment(RootComponent);
 	RightHandMesh->SetupAttachment(HandZeroPoint);
 	LeftHandMesh->SetupAttachment(HandZeroPoint);
+
+	GetArrowComponent()->SetHiddenInGame(false);
 }
 
 void AEnemyBase::StartStun()
@@ -75,6 +83,9 @@ void AEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+
+	GazeAtTarget();
+	
 	if (bIsStun) return;
 
 	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
@@ -102,6 +113,18 @@ FVector AEnemyBase::GetAttackAngle()
 {
 	FVector AttackAngle = FTransform(GetActorRotation()).TransformRotation(RollRotator.Quaternion()).RotateVector(GetActorUpVector());
 	return AttackAngle;
+}
+
+void AEnemyBase::GazeAtTarget()
+{
+	Super::GazeAtTarget();
+
+	if (ACharacterBase* OtherCharacter = GetWorld()->GetGameState<AMyGameStateBase>()->GetOtherCharacter(this))
+	{
+		FVector Direction = OtherCharacter->GetActorLocation() - GetActorLocation();
+		Direction.Z = 0.0f;
+		SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());	
+	}
 }
 
 void AEnemyBase::EndAttack()
