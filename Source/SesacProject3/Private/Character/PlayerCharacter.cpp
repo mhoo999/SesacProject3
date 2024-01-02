@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Weapon/WeaponBase.h"
+#include "Character/VRPlayerAnimComp.h"
+
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -56,6 +58,10 @@ APlayerCharacter::APlayerCharacter()
 	RightLog->SetHorizontalAlignment(EHTA_Center);
 	RightLog->SetVerticalAlignment(EVRTA_TextCenter);
 	RightLog->SetTextRenderColor(FColor(255, 255, 0));
+
+
+	// 240102 SY IK Comp 추가 (애니메이션 컴포넌트)
+	AnimComp = CreateDefaultSubobject<UVRPlayerAnimComp>(TEXT("VR Anim Component"));
 }
 
 void APlayerCharacter::BeginPlay()
