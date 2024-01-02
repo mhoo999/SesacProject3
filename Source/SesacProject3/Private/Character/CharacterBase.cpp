@@ -21,15 +21,20 @@ void ACharacterBase::BeginPlay()
 	GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
 
 	// 타겟 설정(내가 아닌 world 내 Character)
-	// Target = 
+	GetWorldTimerManager().SetTimer(FindTargetTimerHande, FTimerDelegate::CreateLambda([this]()
+	{
+		Target = GetWorld()->GetGameState<AMyGameStateBase>()->GetOtherCharacter(this);
+		if (Target)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Target->GetActorNameOrLabel());
+			GetWorld()->GetTimerManager().ClearTimer(FindTargetTimerHande);
+		}
+	}), 1.0f, true);
 }
 
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// 타겟을 응시하는 함수
-	// GazeAtTarget();
 	
 	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
 	if (bMove)
@@ -165,11 +170,9 @@ FVector ACharacterBase::GetAttackAngle()
 
 void ACharacterBase::GazeAtTarget()
 {
-	// 목표 지점에서 현재 위치로 향하는 벡터를 계산
-	FVector Direction = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+}
 
-	// 계산된 방향 벡터를 Rotator로 변환
-	FRotator TargetRotator = Direction.Rotation();
-	
-	SetActorRotation(TargetRotator);
+void ACharacterBase::SetMoveDistance(float NewDistance)
+{
+	MoveDistance = NewDistance;
 }
