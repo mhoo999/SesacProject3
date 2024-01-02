@@ -46,13 +46,11 @@ protected:
 	float MoveHorizontalDistance = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
-	float StunTime = 1.0f;
+	float StunTime = 30.0f;
 	
 	bool bIsStun = false;
 
 	bool bIsDefence = false;
-
-	FTimerHandle StunTimerHandler;
 
 	bool bMove = false;
 	float MoveTime = 0.0f;
@@ -60,6 +58,9 @@ protected:
 
 	ACharacterBase* Target;
 	FTimerHandle FindTargetTimerHande;
+	FTimerHandle StunTimerHandle;
+
+	bool bIsMoveVertical = false;
 
 public:
 	// 방어 상태를 반환하는 함수

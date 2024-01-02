@@ -26,7 +26,7 @@ void ACharacterBase::BeginPlay()
 		Target = GetWorld()->GetGameState<AMyGameStateBase>()->GetOtherCharacter(this);
 		if (Target)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Target->GetActorNameOrLabel());
+			// UE_LOG(LogTemp, Warning, TEXT("%s"), *Target->GetActorNameOrLabel());
 			GetWorld()->GetTimerManager().ClearTimer(FindTargetTimerHande);
 		}
 	}), 1.0f, true);
@@ -48,6 +48,7 @@ void ACharacterBase::Tick(float DeltaTime)
 		{
 			MoveTime = 0.0f;
 			bMove = false;
+			bIsMoveVertical = false;
 		}
 	}
 }
@@ -121,6 +122,7 @@ void ACharacterBase::MoveVertical(float Distance)
 {
 	Destination = GetActorLocation() + GetActorForwardVector() * Distance;
 	bMove = true;
+	bIsMoveVertical = true;
 }
 
 void ACharacterBase::MoveHorizontal(float SwordAngle)
@@ -145,9 +147,11 @@ void ACharacterBase::StartStun()
 	// 일정 시간 동안 입력 무시
 	// 일정 시간 이후 또는 맞으면 원복
 	UE_LOG(LogTemp, Warning, TEXT("Start Stun"));
+
+	GetWorld()->GetTimerManager().ClearTimer(StunTimerHandle);
 	
-	if (StunTimerHandler.IsValid()) GetWorldTimerManager().ClearTimer(StunTimerHandler);
-	GetWorldTimerManager().SetTimer(StunTimerHandler, this, &ACharacterBase::StopStun, StunTime, false, StunTime);
+	if (StunTimerHandle.IsValid()) GetWorldTimerManager().ClearTimer(StunTimerHandle);
+	GetWorldTimerManager().SetTimer(StunTimerHandle, this, &ACharacterBase::StopStun, StunTime, false, StunTime);
 }
 
 void ACharacterBase::StopStun()

@@ -173,6 +173,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 	// UE_LOG(LogTemp, Warning, TEXT("Destination : %s"), *Destination.ToString());
 	
 	RightLog->SetText(FText::FromString(FString::Printf(TEXT("Roll : %.2f"), RightController->GetComponentRotation().Roll)));
+
+	// UE_LOG(LogTemp, Warning, TEXT("%f"), GetActorForwardVector().Length());
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -214,17 +216,20 @@ bool APlayerCharacter::IsAttack()
 
 void APlayerCharacter::StartDefence()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Defence On"));
+	// UE_LOG(LogTemp, Warning, TEXT("Defence On"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
 	Weapon->SetDefenceMode(true);
-
-	MoveHorizontal(RightController->GetComponentRotation().Roll);
+	
+	if (!bIsMoveVertical)
+	{
+		MoveHorizontal(RightController->GetComponentRotation().Roll);
+	}
 }
 
 void APlayerCharacter::StopDefence()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Defence OFF"));
+	// UE_LOG(LogTemp, Warning, TEXT("Defence OFF"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:OFF")));
 	bIsDefence = false;
 	Weapon->SetDefenceMode(false);
@@ -241,12 +246,14 @@ void APlayerCharacter::StartStun()
 {
 	Super::StartStun();
 	
-	// bIsStun 동안 상태 Display(HUD 빨갛게 오버레이 또는 헤롱헤롱(?), 삐약삐약(?))
+	RightController->SetTrackingMotionSource(FName("None"));
 }
 
 void APlayerCharacter::StopStun()
 {
 	Super::StopStun();
+
+	RightController->SetTrackingMotionSource(FName("Right"));
 }
 
 void APlayerCharacter::GazeAtTarget()
