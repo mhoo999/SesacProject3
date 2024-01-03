@@ -152,7 +152,7 @@ void AMyGameStateBase::MoveToNextRound()
 	}
 
 	// Todo Something
-	
+	/*
 	Player1->SetActorLocation(Player1Start->GetActorLocation());
 	Player2->SetActorLocation(Player2Start->GetActorLocation());
 
@@ -160,7 +160,7 @@ void AMyGameStateBase::MoveToNextRound()
 
 	// Todo : Rotatoin이 적용되지 않음 
 	Player2->SetActorRotation(Player2Start->GetActorRotation());
-
+	*/
 	bIsRoundStarted = true;
 
 	CurrentRoundTime = MaxRoundTime;
