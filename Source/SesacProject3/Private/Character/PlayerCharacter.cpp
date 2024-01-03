@@ -12,6 +12,10 @@
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Weapon/WeaponBase.h"
 #include "Character/VRPlayerAnimComp.h"
+#include "Character/WidgetComp.h"
+#include "Components/WidgetInteractionComponent.h"
+#include "HeadMountedDisplayFunctionLibrary.h"
+
 
 
 // Sets default values
@@ -62,11 +66,16 @@ APlayerCharacter::APlayerCharacter()
 
 	// 240102 SY IK Comp 추가 (애니메이션 컴포넌트)
 	AnimComp = CreateDefaultSubobject<UVRPlayerAnimComp>(TEXT("VR Anim Component"));
+	// 240103 SY Widget Comp 추가
+	WidgetComp = CreateDefaultSubobject<UWidgetComp>(TEXT("VR Widget Component"));
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UHeadMountedDisplayFunctionLibrary::SetTrackingOrigin(EHMDTrackingOrigin::Stage);
+
 	CurrentLocation = RightController->GetComponentLocation();
 
 	// 입력 매핑 설정하기
@@ -192,6 +201,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Triggered, this, &APlayerCharacter::StartDefence);
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
+
+		//240103 SY Widget Comp 입력 받기
+		WidgetComp->SetupPlayerInputComponent(EnhancedInputComponent, RightTrigger); //240103 추가
 	}
 }
 

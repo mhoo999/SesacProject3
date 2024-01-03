@@ -73,6 +73,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	class UVRPlayerAnimComp* AnimComp;
 
+	//240102 SY Widget Component Ãß°¡
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComp* WidgetComp;
+	
+
 	float CurrentTime = 0;
 	
 	FVector OldLocation;
