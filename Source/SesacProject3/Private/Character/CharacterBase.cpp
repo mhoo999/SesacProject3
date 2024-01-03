@@ -39,17 +39,19 @@ void ACharacterBase::Tick(float DeltaTime)
 	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
 	if (bMove)
 	{
-		MoveTime += DeltaTime;
+		//MoveTime += DeltaTime;
 		
-		FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
-		SetActorLocation(NewLocation);
+		// FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
+		// SetActorLocation(NewLocation);
+
+		SetActorLocation(Destination);
 		
-		if (MoveTime > 1.0f)
+		/*if (MoveTime > 1.0f)
 		{
 			MoveTime = 0.0f;
 			bMove = false;
 			bIsMoveVertical = false;
-		}
+		}*/
 	}
 }
 
@@ -90,7 +92,7 @@ void ACharacterBase::SuccessAttack()
 void ACharacterBase::SuccessDefence()
 {
 	// 앞으로 MoveDistance 만큼 이동
-	MoveVertical(MoveDistance);
+	MoveVertical(SuccessDefenceDistance);
 }
 
 // 피격
@@ -113,7 +115,7 @@ void ACharacterBase::ReceiveDamage()
 void ACharacterBase::FailAttack()
 {
 	// 뒤로 -MoveDistance 만큼 이동
-	MoveVertical(MoveDistance * -1);
+	MoveVertical(SuccessDefenceDistance * -1);
 	
 	StartStun();
 }

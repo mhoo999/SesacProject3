@@ -37,10 +37,14 @@ protected:
 	// UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	// EMainHand MainHand;
 
-	// Vertical(공격 성공, 방어 성공, 피격, 공격 실패) 이동 거리
+	// Vertical(공격 성공, 피격) 이동 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float MoveDistance = 50.f;
 
+	// Vertical(방어 성공, 공격 실패) 이동 거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
+	float SuccessDefenceDistance = 25.0f;
+	
 	// Horizontal 이동 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Value", meta = (AllowPrivateAccess = "true"))
 	float MoveHorizontalDistance = 0.5f;
