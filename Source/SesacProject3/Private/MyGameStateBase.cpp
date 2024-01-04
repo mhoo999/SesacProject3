@@ -3,13 +3,10 @@
 
 #include "MyGameStateBase.h"
 
-#include "Character/CharacterBase.h"
-
-#include <EngineUtils.h>
-#include <GameFramework/PlayerStart.h>
-
 #include "MyGameInstance.h"
-#include "GameFramework/PlayerState.h"
+#include "MyGameModeBase.h"
+
+#include "Character/CharacterBase.h"
 
 AMyGameStateBase::AMyGameStateBase()
 {
@@ -19,20 +16,6 @@ AMyGameStateBase::AMyGameStateBase()
 void AMyGameStateBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	for (TActorIterator<AActor> It(GetWorld(), APlayerStart::StaticClass()); It; ++It)
-	{
-		if (It-> GetActorLabel().Compare(TEXT("Player1Start")) == 0)
-		{
-			Player1Start = Cast<APlayerStart>(*It);
-		}
-		else
-		{
-			Player2Start = Cast<APlayerStart>(*It);
-		}
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(WaitForPlayerReadyTimer, this, &AMyGameStateBase::WaitForPlayerReady, 1.0f, true);
 }
 
 void AMyGameStateBase::Tick(float DeltaSeconds)
@@ -55,63 +38,51 @@ void AMyGameStateBase::Tick(float DeltaSeconds)
 
 	// UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::Tick) Round : %d, RoundTime : %f"), WinResultArray.Num() + 1, CurrentRoundTime);
 }
-
-void AMyGameStateBase::AddPlayerState(APlayerState* PlayerState)
-{
-	Super::AddPlayerState(PlayerState);
-
-	if (HasAuthority() == false) return;
-	
-	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::AddPlayerState) Player : %s, TotalPlayer Num : %d"), *PlayerState->GetActorNameOrLabel(), PlayerArray.Num());
-
-	EGameMode GameMode = GetGameInstance<UMyGameInstance>()->GetGameMode();
-	if (GameMode == EGameMode::SINGLE && PlayerArray.Num() == 1)
-	{
-		PlaySingle();
-	}
-	else if (GameMode == EGameMode::MULTI && PlayerArray.Num() == 2)
-	{
-		PlayMulti();
-	}
-}
-
 void AMyGameStateBase::AddPlayer(ACharacterBase* NewPlayer)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::AddPlayer) Player : %s, TotalPlayer Num : %d"), *NewPlayer->GetActorNameOrLabel(), PlayerArray.Num());
+
+	if (AMyGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode<AMyGameModeBase>())
+	{
+		EGameMode GameModeType = GetGameInstance<UMyGameInstance>()->GetGameMode();
+		
+		if (GameModeType == EGameMode::SINGLE && PlayerArray.Num() == 1)
+		{
+			GameModeBase->PlaySingle();
+		}
+		else if (GameModeType == EGameMode::MULTI && PlayerArray.Num() == 2)
+		{
+			GameModeBase->PlayMulti();
+		}
+	}
 }
 
 void AMyGameStateBase::SetLoseCharacter(ACharacterBase* NewLoseCharacter)
 {
-	bIsRoundStarted = false;
-	
-	if (NewLoseCharacter == nullptr)
-	{
-		// Draw
-		UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Draw"), WinResultArray.Num() + 1);
-		WinResultArray.Add(0);
-		WinResultAdded.ExecuteIfBound(0);
-	}
-	else if (NewLoseCharacter == Player1)
-	{
-		// Player1 Lose
-		UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Player2 Win"), WinResultArray.Num() + 1);
-		WinResultArray.Add(2);
-		WinResultAdded.ExecuteIfBound(2);
-	}
-	else
-	{
-		// Player2 Lose
-		UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Player1 Win"), WinResultArray.Num() + 1);
-		WinResultArray.Add(1);
-		WinResultAdded.ExecuteIfBound(1);
-	}
-	MoveToNextRound();
-}
-
-ACharacterBase* AMyGameStateBase::GetOtherCharacter(ACharacterBase* CurrentCharacter)
-{
-	if (CurrentCharacter == Player1) return Player2;
-	
-	return Player1;
+	// bIsRoundStarted = false;
+	//
+	// if (NewLoseCharacter == nullptr)
+	// {
+	// 	// Draw
+	// 	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Draw"), WinResultArray.Num() + 1);
+	// 	WinResultArray.Add(0);
+	// 	WinResultAdded.ExecuteIfBound(0);
+	// }
+	// else if (NewLoseCharacter == Player1)
+	// {
+	// 	// Player1 Lose
+	// 	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Player2 Win"), WinResultArray.Num() + 1);
+	// 	WinResultArray.Add(2);
+	// 	WinResultAdded.ExecuteIfBound(2);
+	// }
+	// else
+	// {
+	// 	// Player2 Lose
+	// 	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::SetLoseCharacter) %d Round : Player1 Win"), WinResultArray.Num() + 1);
+	// 	WinResultArray.Add(1);
+	// 	WinResultAdded.ExecuteIfBound(1);
+	// }
+	// MoveToNextRound();
 }
 
 void AMyGameStateBase::MoveToNextRound()
@@ -184,27 +155,4 @@ bool AMyGameStateBase::IsRoundStarted() const
 void AMyGameStateBase::StartRound()
 {
 	bIsRoundStarted = true;
-}
-
-void AMyGameStateBase::WaitForPlayerReady()
-{
-	if (Player1 != nullptr && Player2 != nullptr)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(WaitForPlayerReadyTimer);
-		MoveToNextRound();
-	}
-}
-
-void AMyGameStateBase::PlaySingle()
-{
-	// Spawn Enemy
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("AMyGameStateBase::PlaySingle")));
-}
-
-void AMyGameStateBase::PlayMulti()
-{
-	// Start Play
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("AMyGameStateBase::PlayMulti")));
 }

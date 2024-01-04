@@ -58,7 +58,8 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false || bIsAttackMode == false) return;
+	AMyGameStateBase* GameState = GetWorld()->GetGameState<AMyGameStateBase>();
+	if (GameState == nullptr || GameState->IsRoundStarted() == false || bIsAttackMode == false) return;
 	
 	
 	// UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::OnBoxComponentBeginOverlap"));

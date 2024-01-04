@@ -15,6 +15,7 @@
 #include "Character/WidgetComp.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "MyGameModeBase.h"
 #include "WidgetPointerComponent.h"
 
 
@@ -103,6 +104,7 @@ void APlayerCharacter::BeginPlay()
 
 void APlayerCharacter::Tick(float DeltaTime)
 {
+	if (GameMode && GameMode->IsRoundStarted() == false) return;
 	Super::Tick(DeltaTime);
 	
 	// 타겟을 응시하는 함수
@@ -243,6 +245,8 @@ bool APlayerCharacter::IsAttack()
 
 void APlayerCharacter::StartDefence()
 {
+	if (GameMode && GameMode->IsRoundStarted() == false) return;
+	
 	UE_LOG(LogTemp, Warning, TEXT("Defence On"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
@@ -253,6 +257,8 @@ void APlayerCharacter::StartDefence()
 
 void APlayerCharacter::StopDefence()
 {
+	if (GameMode && GameMode->IsRoundStarted() == false) return;
+	
 	// UE_LOG(LogTemp, Warning, TEXT("Defence OFF"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:OFF")));
 	bIsDefence = false;
