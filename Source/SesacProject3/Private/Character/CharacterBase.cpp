@@ -18,7 +18,7 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
+	/*GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
 
 	// 타겟 설정(내가 아닌 world 내 Character)
 	GetWorldTimerManager().SetTimer(FindTargetTimerHande, FTimerDelegate::CreateLambda([this]()
@@ -29,7 +29,7 @@ void ACharacterBase::BeginPlay()
 			// UE_LOG(LogTemp, Warning, TEXT("%s"), *Target->GetActorNameOrLabel());
 			GetWorld()->GetTimerManager().ClearTimer(FindTargetTimerHande);
 		}
-	}), 1.0f, true);
+	}), 1.0f, true);*/
 }
 
 void ACharacterBase::Tick(float DeltaTime)
