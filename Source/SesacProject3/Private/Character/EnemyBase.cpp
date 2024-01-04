@@ -3,13 +3,11 @@
 
 #include "Character/EnemyBase.h"
 
+#include <Components/ArrowComponent.h>
+
 #include "Weapon/WeaponBase.h"
 #include "MyGameStateBase.h"
-
-#include <Kismet/KismetMathLibrary.h>
-
-#include "Components/ArrowComponent.h"
-#include "Kismet/KismetNodeHelperLibrary.h"
+#include "Character/PlayerCharacter.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -18,28 +16,35 @@ AEnemyBase::AEnemyBase()
 	RightHandMesh->SetupAttachment(HandZeroPoint);
 	LeftHandMesh->SetupAttachment(HandZeroPoint);
 
-	GetArrowComponent()->SetHiddenInGame(false);
+	// GetArrowComponent()->SetHiddenInGame(false);
 }
 
 void AEnemyBase::StartStun()
 {
 	Super::StartStun();
+
+	bIsAttack = false;
+	bIsDefence = false;
+}
+
+void AEnemyBase::StopStun()
+{
+	Super::StopStun();
+
 	EndAttack();
-	Release();
+	Defence();
 }
 
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//RightHandMesh->SetRelativeLocation(HandZeroLocation + FVector(0, 0, AttackDistance));
-
 	// Spawn Sword
 	if (WeaponClass)
 	{
 		Weapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponClass);
         Weapon->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetIncludingScale);
-        Weapon->SetActorRelativeLocation(FVector(90, 40, -3));
+        Weapon->SetActorRelativeLocation(FVector(30, 20, -3));
         Weapon->SetActorRelativeRotation(FRotator(0, 20, 0));
         Weapon->SetOwningPlayer(this);
 	}
@@ -48,6 +53,11 @@ void AEnemyBase::BeginPlay()
 	// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::BeginPlay) EnemyPlayer Name : %s"), *EnemyPlayer->GetActorNameOrLabel());
 
 	LeftHandMesh->AttachToComponent(RightHandMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+	if (Cast<APlayerCharacter>(Target))
+	{
+		bIsTargetPlayer = true;
+	}
 }
 
 bool AEnemyBase::IsAttack()
@@ -57,23 +67,22 @@ bool AEnemyBase::IsAttack()
 
 void AEnemyBase::Attack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Attack) %s's Attack"), *GetActorNameOrLabel());
 	Release();
-	bIsReadyToAttack = false;
 	bIsAttack = true;
 	Weapon->SetAttackMode(bIsAttack);
 }
 
 void AEnemyBase::Defence()
 {
-	bIsAttack = false;
 	bIsDefence = true;
 	Weapon->SetDefenceMode(bIsDefence);
 	RightHandMesh->SetRelativeLocation(FVector(DefecneDistance, 0, 0));
-	// PitchRotator.Pitch = 0.0f;
 }
 
 void AEnemyBase::Release()
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Release) %s's Release"), *GetActorNameOrLabel());
 	bIsDefence = false;
 	Weapon->SetDefenceMode(bIsDefence);
 	RightHandMesh->SetRelativeLocation(FVector(AttackDistance, 0, 0));
@@ -82,26 +91,20 @@ void AEnemyBase::Release()
 void AEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
+	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false) return;
 
+	if (CheckFall())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Tick) %s CheckFall True"), *GetActorNameOrLabel());
+		GetWorld()->GetGameState<AMyGameStateBase>()->SetLoseCharacter(this);
+	}
 
 	GazeAtTarget();
 	
 	if (bIsStun) return;
 
 	HandZeroPoint->SetRelativeRotation(FTransform(RollRotator).TransformRotation(bIsDefence ? FQuat::Identity : PitchRotator.Quaternion()));
-	
-	// 공격 중인 경우
-	if (bIsAttack)
-	{
-		//HandZeroPoint->AddLocalRotation(FRotator(AttackSpeed * DeltaSeconds,0,0));
-
-		PitchRotator.Pitch += DeltaSeconds * AttackSpeed;
-
-		if (PitchRotator.Pitch <= AttackEndPitchRotation)
-		{
-			EndAttack();
-		}
-	}
 }
 
 bool AEnemyBase::IsDefence()
@@ -113,6 +116,25 @@ FVector AEnemyBase::GetAttackAngle()
 {
 	FVector AttackAngle = FTransform(GetActorRotation()).TransformRotation(RollRotator.Quaternion()).RotateVector(GetActorUpVector());
 	return AttackAngle;
+}
+
+bool AEnemyBase::CheckFall()
+{
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+	FVector End = Start - GetActorUpVector() * 100.0f;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionQueryParams))
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::CheckFall) OutHit Actor Name : %s"), *OutHit.GetActor()->GetActorNameOrLabel());
+		return false;
+	}
+	
+	return true;
 }
 
 void AEnemyBase::GazeAtTarget()
@@ -136,18 +158,24 @@ void AEnemyBase::EndAttack()
 	PitchRotator.Pitch = AttackStartPitchRotation;
 
 	if (RollRotator.Roll >= 360.f) RollRotator.Roll -= 360.f;
+	if (RollRotator.Roll >= 180.f) RollRotator.Roll -= 360.f;
 }
 
 bool AEnemyBase::RotateHand(float DeltaSeconds)
 {
+	if (bIsTargetPlayer)
+	{
+		// TargetRollRotation = Target->GetRollRotation();
+
+		// Todo : 난이도 -> TargetRollRotation 에 얼마나 큰 오차를 줄 것인가?
+		/*
+		 * Arange = FMath::RandRange(-10, 10) + FMath::RandRange(-10, 10);
+		 * Arange += Arange > 0 ?
+		 */
+	}
+
 	if (RollRotator.Roll > TargetRollRotation) RollRotator.Roll -= DeltaSeconds * HandRotateSpeed;
 	else if (RollRotator.Roll < TargetRollRotation) RollRotator.Roll += DeltaSeconds * HandRotateSpeed;
-
-	// 일정 확률로 각도를 반전시킴
-	// if (FMath::RandRange(0.0f, 100.0f) <= 1.0f)
-	// {
-	// 	TargetRollRotation *= -1;
-	// }
 
 	if (FMath::Abs(RollRotator.Roll - TargetRollRotation) <= RotationTolerance)
 	{
@@ -155,14 +183,4 @@ bool AEnemyBase::RotateHand(float DeltaSeconds)
 	}
 	
 	return false;
-}
-
-void AEnemyBase::ReadyAttack(float DeltaSeconds)
-{
-	PitchRotator.Pitch -= ReadySpeed * DeltaSeconds;
-
-	if (PitchRotator.Pitch >= AttackStartPitchRotation)
-	{
-		bIsReadyToAttack = true;
-	}
 }

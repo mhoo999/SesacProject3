@@ -78,6 +78,7 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 			{
 				//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 3.0f, 0, 3.0f);
 				//DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
+
 				OwningPlayer->FailAttack();
 				OwningPlayer->StartStun();
 				Character->SuccessDefence();
@@ -92,9 +93,11 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 		// Todo : ReceiveDamage 할 때 this->GetKnockbackDistance() 를 받아서 쓸 것
 		float CurrentKnockbackDistance = GetKnockbackDistance();
+		Character->SetMoveDistance(CurrentKnockbackDistance);
 		Character->ReceiveDamage();
+		OwningPlayer->SetMoveDistance(CurrentKnockbackDistance);
 		OwningPlayer->SuccessAttack();
-		UE_LOG(LogTemp, Warning, TEXT("%s AWeaponBase::OnBoxComponentBeginOverlap) Attack"), *FString::FromInt(GetWorld()->GetRealTimeSeconds()));
+		// UE_LOG(LogTemp, Warning, TEXT("%s AWeaponBase::OnBoxComponentBeginOverlap) Attack"), *FString::FromInt(GetWorld()->GetRealTimeSeconds()));
 	}
 }
 
@@ -140,15 +143,7 @@ FVector AWeaponBase::GetWeaponAngleVector()
 	WeaponAngleVector.X = 0.0f;
 
 	WeaponAngleVector = FTransform(OwningPlayer->GetActorRotation()).TransformPosition(WeaponAngleVector);
-
-	if (Cast<AEnemyBase>(OwningPlayer))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AWeaponBase::GetWeaponAngleVector) LookAtRotation : %s"), *UKismetMathLibrary::FindLookAtRotation(StartLocation, StartLocation + WeaponAngleVector).ToString());
-	}
-
-	DrawDebugLine(GetWorld(), StartLocation, StartLocation + WeaponAngleVector * 100.0f, FColor::Blue, false, 0, 0, 3.0f);
 	
-	//
 	// // 시작점에서 끝점을 바라보기 위한 회전값 (월드좌표 기준)
 	// 
 	//
@@ -181,4 +176,5 @@ float AWeaponBase::GetKnockbackDistance()
 }
 void AWeaponBase::SuccessDefence()
 {
+	
 }
