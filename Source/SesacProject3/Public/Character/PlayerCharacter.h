@@ -10,6 +10,7 @@ class UTextRenderComponent;
 class UMotionControllerComponent;
 class UCameraComponent;
 class UInputMappingContext;
+class UVRPlayerAnimComp;
 
 UCLASS()
 class SESACPROJECT3_API APlayerCharacter : public ACharacterBase
@@ -71,7 +72,7 @@ public:
 
 	//240102 SY IK Component 추가
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	class UVRPlayerAnimComp* AnimComp;
+	UVRPlayerAnimComp* AnimComp;
 
 	//240102 SY Widget Component 추가
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))

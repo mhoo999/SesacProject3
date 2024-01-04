@@ -18,7 +18,7 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
+	/*GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
 
 	// 타겟 설정(내가 아닌 world 내 Character)
 	GetWorldTimerManager().SetTimer(FindTargetTimerHande, FTimerDelegate::CreateLambda([this]()
@@ -29,7 +29,7 @@ void ACharacterBase::BeginPlay()
 			// UE_LOG(LogTemp, Warning, TEXT("%s"), *Target->GetActorNameOrLabel());
 			GetWorld()->GetTimerManager().ClearTimer(FindTargetTimerHande);
 		}
-	}), 1.0f, true);
+	}), 1.0f, true);*/
 }
 
 void ACharacterBase::Tick(float DeltaTime)
@@ -37,12 +37,14 @@ void ACharacterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
-	if (bMove)
+	/*if (bMove)
 	{
 		MoveTime += DeltaTime;
 		
-		FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
-		SetActorLocation(NewLocation);
+		 FVector NewLocation = FMath::Lerp(GetActorLocation(), Destination, MoveTime);
+		 SetActorLocation(NewLocation);
+
+		SetActorLocation(Destination);
 		
 		if (MoveTime > 1.0f)
 		{
@@ -50,7 +52,7 @@ void ACharacterBase::Tick(float DeltaTime)
 			bMove = false;
 			bIsMoveVertical = false;
 		}
-	}
+	}*/
 }
 
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -90,7 +92,7 @@ void ACharacterBase::SuccessAttack()
 void ACharacterBase::SuccessDefence()
 {
 	// 앞으로 MoveDistance 만큼 이동
-	MoveVertical(MoveDistance);
+	MoveVertical(SuccessDefenceDistance);
 }
 
 // 피격
@@ -113,7 +115,7 @@ void ACharacterBase::ReceiveDamage()
 void ACharacterBase::FailAttack()
 {
 	// 뒤로 -MoveDistance 만큼 이동
-	MoveVertical(MoveDistance * -1);
+	MoveVertical(SuccessDefenceDistance * -1);
 	
 	StartStun();
 }
@@ -121,8 +123,10 @@ void ACharacterBase::FailAttack()
 void ACharacterBase::MoveVertical(float Distance)
 {
 	Destination = GetActorLocation() + GetActorForwardVector() * Distance;
-	bMove = true;
-	bIsMoveVertical = true;
+	// bMove = true;
+	// bIsMoveVertical = true;
+
+	SetActorLocation(Destination);
 }
 
 void ACharacterBase::MoveHorizontal(float SwordAngle)
@@ -135,9 +139,10 @@ void ACharacterBase::MoveHorizontal(float SwordAngle)
 
 	// 정규화된 값을 이용해서 새로운 Distance 도출
 	float NewDistance = MoveHorizontalDistance * NewAngle;
-	
-	Destination = GetActorLocation() + GetActorRightVector() * NewDistance;
-	bMove = true;
+
+	AddActorWorldOffset(GetActorRightVector() * NewDistance);
+	// Destination = GetActorLocation() + GetActorRightVector() * NewDistance;
+	// bMove = true;
 }
 
 void ACharacterBase::StartStun()

@@ -38,7 +38,7 @@ public:
 	void PlayMulti();
 	
 private:
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	bool bIsRoundStarted;
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	float CurrentRoundTime;

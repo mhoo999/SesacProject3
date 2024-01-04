@@ -41,17 +41,17 @@ void AMyGameStateBase::Tick(float DeltaSeconds)
 
 	if (bIsRoundStarted == false) return;
 	
-	CurrentRoundTime -= DeltaSeconds;
-
-	if (CurrentRoundTime <= 0.0f)
-	{
-		// Draw
-		SetLoseCharacter(nullptr);
-	}
-	else
-	{
-		RoundTimeChanged.ExecuteIfBound(CurrentRoundTime);
-	}
+	// CurrentRoundTime -= DeltaSeconds;
+	//
+	// if (CurrentRoundTime <= 0.0f)
+	// {
+	// 	// Draw
+	// 	SetLoseCharacter(nullptr);
+	// }
+	// else
+	// {
+	// 	RoundTimeChanged.ExecuteIfBound(CurrentRoundTime);
+	// }
 
 	// UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::Tick) Round : %d, RoundTime : %f"), WinResultArray.Num() + 1, CurrentRoundTime);
 }
