@@ -6,6 +6,8 @@
 #include "InputAction.h"
 #include "PlayerCharacter.generated.h"
 
+class UWidgetInteractionComponent;
+class UWidgetPointerComponent;
 class UTextRenderComponent;
 class UMotionControllerComponent;
 class UCameraComponent;
@@ -47,8 +49,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* RightLog;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RightTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
@@ -61,6 +63,9 @@ private:
 	float AttackTimer = 0.3f;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components")
+	UWidgetInteractionComponent* RightPointer;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComp;
 	
@@ -77,7 +82,6 @@ public:
 	//240102 SY Widget Component Ãß°¡
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComp* WidgetComp;
-	
 
 	float CurrentTime = 0;
 	
