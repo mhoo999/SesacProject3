@@ -31,9 +31,10 @@ void UWidgetComp::SetupPlayerInputComponent(UEnhancedInputComponent* EnhancedInp
 
 void UWidgetComp::MouseLeftClick(const FInputActionValue& value)
 {
-	//Player->RightTrigger->PressPointerKey(EKeys::LeftMouseButton); // 이 이벤트가 실행되면 LeftMouseButton를 누른 것과 같은 효과를 주겠다.(이런식으로 키 효과 부여 가능)
+	Player->RightPointer->PressPointerKey(EKeys::LeftMouseButton); // 이 이벤트가 실행되면 LeftMouseButton를 누른 것과 같은 효과를 주겠다.(이런식으로 키 효과 부여 가능)
 }
 
 void UWidgetComp::MouseLeftRelease(const FInputActionValue& value)
 {
+	Player->RightPointer->ReleasePointerKey(EKeys::LeftMouseButton);
 }

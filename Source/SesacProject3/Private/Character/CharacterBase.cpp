@@ -11,7 +11,12 @@ ACharacterBase::ACharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	LeftHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>("LeftHandMesh");
+	
 	RightHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>("RightHandMesh");
+	
+	Body = CreateDefaultSubobject<USkeletalMeshComponent>("Body");
+	Body->SetRelativeLocation(FVector(0, 0, -90));
+	Body->SetRelativeRotation(FRotator(0, -90, 0));
 }
 
 void ACharacterBase::BeginPlay()
