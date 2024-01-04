@@ -18,32 +18,34 @@ class SESACPROJECT3_API AEnemyBase : public ACharacterBase
 public:
 	AEnemyBase();
 
-	virtual void StartStun() override;
-	
 	virtual void BeginPlay() override;
+	// Stun
+	virtual void StartStun() override;
+	virtual void StopStun() override;
+	// Getter
 	virtual bool IsAttack() override;
-
+	virtual bool IsDefence() override;
+	// Action
 	UFUNCTION(CallInEditor, BlueprintCallable)
-	void Attack();
+	virtual void Attack();
 	UFUNCTION(CallInEditor, BlueprintCallable)
-	void Defence();
+	virtual void Defence();
 	UFUNCTION(CallInEditor, BlueprintCallable)
 	void Release();
 
-	virtual void Tick(float DeltaSeconds) override;
-
-	virtual bool IsDefence() override;
+	virtual void Tick(float DeltaSeconds) override;	
 
 	virtual FVector GetAttackAngle() override;
 
+private:
+	bool CheckFall();
+
+protected:
 	virtual void GazeAtTarget() override;
 	
-protected:
 	virtual void EndAttack();
 
 	bool RotateHand(float DeltaSeconds);
-
-	void ReadyAttack(float DeltaSeconds);
 	
 	// Player
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
@@ -67,12 +69,6 @@ protected:
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float AttackEndPitchRotation;
 	
-	// Ready
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
-	float ReadySpeed;
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
-	bool bIsReadyToAttack;
-
 	// Defence
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	float DefecneDistance;
@@ -91,4 +87,7 @@ protected:
 	FRotator RollRotator;
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	FRotator PitchRotator;
+	
+	UPROPERTY(VisibleInstanceOnly)
+	bool bIsTargetPlayer;
 };

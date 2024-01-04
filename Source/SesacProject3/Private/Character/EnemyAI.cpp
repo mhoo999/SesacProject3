@@ -3,7 +3,7 @@
 
 #include "Character/EnemyAI.h"
 
-#include "Weapon/WeaponBase.h"
+#include "MyGameStateBase.h"
 
 void AEnemyAI::BeginPlay()
 {
@@ -14,28 +14,76 @@ void AEnemyAI::BeginPlay()
 
 void AEnemyAI::Tick(float DeltaSeconds)
 {
+	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false) return;
 	Super::Tick(DeltaSeconds);
 	
-	// 방어 중인 경우 (방어를 몇초 하다가 공격으로 전환할 것인지 체크)
-	if (bIsDefence)
-	{
-		// 플레이어의 각도를 따라갈 것인지?
-		// 일정 각도로 돌아갈 것인지?
+	GazeAtTarget();
 
+	switch (EnemyState)
+	{
+	case EEnemyState::ATTACK:
+		PitchRotator.Pitch += DeltaSeconds * AttackSpeed;
+		if (PitchRotator.Pitch <= AttackEndPitchRotation)
+		{
+			EndAttack();
+		}
+		break;
+	case EEnemyState::DEFENCE:
 		if (RotateHand(DeltaSeconds))
 		{
 			Attack();
 		}
-		
-		MoveHorizontal(RollRotator.Roll);
+		else
+		{
+			float RollValue = RollRotator.Roll;
+	
+			if (RollValue > 180.f)
+			{
+				RollValue -= 360.f;
+			}
+			
+			// MoveHorizontal(RollValue);
+		}
+		break;
+	case EEnemyState::STUN:
+		break;
 	}
+}
+
+void AEnemyAI::Attack()
+{
+	Super::Attack();
+	EnemyState = EEnemyState::ATTACK;
+}
+
+void AEnemyAI::Defence()
+{
+	Super::Defence();
+	EnemyState = EEnemyState::DEFENCE;
+}
+
+void AEnemyAI::StartStun()
+{
+	Super::StartStun();
+
+	EnemyState = EEnemyState::STUN;
 }
 
 void AEnemyAI::EndAttack()
 {
 	Super::EndAttack();
+	
+	TargetRollRotation = RollRotator.Roll + FMath::RandRange(-180.f, 180.f);
 
-	TargetRollRotation = FMath::RandRange(0.0f, 359.0f);
+	if (TargetRollRotation < -180.f)
+	{
+		TargetRollRotation += 360.f;
+	}
+
+	if (TargetRollRotation > 180.f)
+	{
+		TargetRollRotation -= 360.f;
+	}
 	
 	Defence();
 }

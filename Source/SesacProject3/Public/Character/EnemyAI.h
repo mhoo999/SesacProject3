@@ -9,6 +9,16 @@
 /**
  * 
  */
+UENUM()
+enum class EEnemyState : uint8
+{
+	NONE,
+	ATTACK,
+	DEFENCE,
+	STUN,
+	SIZE
+};
+
 UCLASS()
 class SESACPROJECT3_API AEnemyAI : public AEnemyBase
 {
@@ -18,6 +28,14 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void Attack() override;
+	virtual void Defence() override;
+
+	virtual void StartStun() override;
+
 protected:
 	virtual void EndAttack() override;
+
+	UPROPERTY(EditAnywhere)
+	EEnemyState EnemyState;
 };
