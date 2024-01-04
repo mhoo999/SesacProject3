@@ -8,6 +8,9 @@
 #include <EngineUtils.h>
 #include <GameFramework/PlayerStart.h>
 
+#include "MyGameInstance.h"
+#include "GameFramework/PlayerState.h"
+
 AMyGameStateBase::AMyGameStateBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -38,37 +41,48 @@ void AMyGameStateBase::Tick(float DeltaSeconds)
 
 	if (bIsRoundStarted == false) return;
 	
-	CurrentRoundTime -= DeltaSeconds;
-
-	if (CurrentRoundTime <= 0.0f)
-	{
-		// Draw
-		SetLoseCharacter(nullptr);
-	}
-	else
-	{
-		RoundTimeChanged.ExecuteIfBound(CurrentRoundTime);
-	}
+	// CurrentRoundTime -= DeltaSeconds;
+	//
+	// if (CurrentRoundTime <= 0.0f)
+	// {
+	// 	// Draw
+	// 	SetLoseCharacter(nullptr);
+	// }
+	// else
+	// {
+	// 	RoundTimeChanged.ExecuteIfBound(CurrentRoundTime);
+	// }
 
 	// UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::Tick) Round : %d, RoundTime : %f"), WinResultArray.Num() + 1, CurrentRoundTime);
 }
 
+void AMyGameStateBase::AddPlayerState(APlayerState* PlayerState)
+{
+	Super::AddPlayerState(PlayerState);
+
+	if (HasAuthority() == false) return;
+	
+	UE_LOG(LogTemp, Warning, TEXT("AMyGameStateBase::AddPlayerState) Player : %s, TotalPlayer Num : %d"), *PlayerState->GetActorNameOrLabel(), PlayerArray.Num());
+
+	EGameMode GameMode = GetGameInstance<UMyGameInstance>()->GetGameMode();
+	if (GameMode == EGameMode::SINGLE && PlayerArray.Num() == 1)
+	{
+		PlaySingle();
+	}
+	else if (GameMode == EGameMode::MULTI && PlayerArray.Num() == 2)
+	{
+		PlayMulti();
+	}
+}
+
 void AMyGameStateBase::AddPlayer(ACharacterBase* NewPlayer)
 {
-	if (HasAuthority() == false) return;
-
-	if (Player1 == nullptr)
-	{
-		Player1 = NewPlayer;
-	}
-	else if (Player2 == nullptr)
-	{
-		Player2 = NewPlayer;
-	}
 }
 
 void AMyGameStateBase::SetLoseCharacter(ACharacterBase* NewLoseCharacter)
 {
+	bIsRoundStarted = false;
+	
 	if (NewLoseCharacter == nullptr)
 	{
 		// Draw
@@ -102,9 +116,6 @@ ACharacterBase* AMyGameStateBase::GetOtherCharacter(ACharacterBase* CurrentChara
 
 void AMyGameStateBase::MoveToNextRound()
 {
-	bIsRoundStarted = false;
-	// Round 수
-
 	// Todo : 나중엔 무승부 체크해서 경기장 축소시키고 4라운드 진행해야함
 	if (WinResultArray.Num() >= 3)
 	{
@@ -151,19 +162,18 @@ void AMyGameStateBase::MoveToNextRound()
 		}
 	}
 
-	// Todo Something
-	/*
-	Player1->SetActorLocation(Player1Start->GetActorLocation());
-	Player2->SetActorLocation(Player2Start->GetActorLocation());
-
-	Player1->SetActorRotation(Player1Start->GetActorRotation());
-
-	// Todo : Rotatoin이 적용되지 않음 
-	Player2->SetActorRotation(Player2Start->GetActorRotation());
-	*/
-	bIsRoundStarted = true;
-
-	CurrentRoundTime = MaxRoundTime;
+	// // Todo Something
+	//
+	// Player1->SetActorLocation(Player1Start->GetActorLocation());
+	// Player2->SetActorLocation(Player2Start->GetActorLocation());
+	//
+	// // Todo : Rotatoin이 적용되지 않음 
+	// Player1->SetActorRotation(Player1Start->GetActorRotation());
+	// Player2->SetActorRotation(Player2Start->GetActorRotation());
+	//
+	// bIsRoundStarted = true;
+	//
+	// CurrentRoundTime = MaxRoundTime;
 }
 
 bool AMyGameStateBase::IsRoundStarted() const
@@ -183,4 +193,16 @@ void AMyGameStateBase::WaitForPlayerReady()
 		GetWorld()->GetTimerManager().ClearTimer(WaitForPlayerReadyTimer);
 		MoveToNextRound();
 	}
+}
+
+void AMyGameStateBase::PlaySingle()
+{
+	// Spawn Enemy
+}
+
+void AMyGameStateBase::PlayMulti()
+{
+	// Start Play
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("AMyGameStateBase::PlayMulti")));
 }

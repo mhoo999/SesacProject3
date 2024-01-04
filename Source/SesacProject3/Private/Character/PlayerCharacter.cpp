@@ -15,7 +15,7 @@
 #include "Character/WidgetComp.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
-
+#include "WidgetPointerComponent.h"
 
 
 // Sets default values
@@ -63,6 +63,10 @@ APlayerCharacter::APlayerCharacter()
 	RightLog->SetVerticalAlignment(EVRTA_TextCenter);
 	RightLog->SetTextRenderColor(FColor(255, 255, 0));
 
+	RightPointer = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Right Widget Pointer"));
+	RightPointer->SetupAttachment(RightHandMesh);
+	RightPointer->SetRelativeLocation(FVector(0, 10, 0));
+	RightPointer->SetRelativeRotation(FRotator(0, 90,0));
 
 	// 240102 SY IK Comp 추가 (애니메이션 컴포넌트)
 	AnimComp = CreateDefaultSubobject<UVRPlayerAnimComp>(TEXT("VR Anim Component"));

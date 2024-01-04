@@ -19,6 +19,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void AddPlayerState(APlayerState* PlayerState) override;
 	
 	void AddPlayer(ACharacterBase* NewPlayer);
 	void SetLoseCharacter(ACharacterBase* NewLoseCharacter);
@@ -31,9 +33,12 @@ public:
 
 	UFUNCTION()
 	void WaitForPlayerReady();
+
+	void PlaySingle();
+	void PlayMulti();
 	
 private:
-	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	bool bIsRoundStarted;
 	UPROPERTY(VisibleInstanceOnly, Meta = (AllowPrivateAccess))
 	float CurrentRoundTime;

@@ -6,10 +6,13 @@
 #include "InputAction.h"
 #include "PlayerCharacter.generated.h"
 
+class UWidgetInteractionComponent;
+class UWidgetPointerComponent;
 class UTextRenderComponent;
 class UMotionControllerComponent;
 class UCameraComponent;
 class UInputMappingContext;
+class UVRPlayerAnimComp;
 
 UCLASS()
 class SESACPROJECT3_API APlayerCharacter : public ACharacterBase
@@ -46,8 +49,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* RightLog;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RightTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
@@ -60,6 +63,9 @@ private:
 	float AttackTimer = 0.3f;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components")
+	UWidgetInteractionComponent* RightPointer;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComp;
 	
@@ -71,12 +77,11 @@ public:
 
 	//240102 SY IK Component 추가
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	class UVRPlayerAnimComp* AnimComp;
+	UVRPlayerAnimComp* AnimComp;
 
 	//240102 SY Widget Component 추가
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	class UWidgetComp* WidgetComp;
-	
 
 	float CurrentTime = 0;
 	
