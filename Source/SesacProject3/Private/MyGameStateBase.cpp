@@ -198,6 +198,8 @@ void AMyGameStateBase::WaitForPlayerReady()
 void AMyGameStateBase::PlaySingle()
 {
 	// Spawn Enemy
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("AMyGameStateBase::PlaySingle")));
 }
 
 void AMyGameStateBase::PlayMulti()
