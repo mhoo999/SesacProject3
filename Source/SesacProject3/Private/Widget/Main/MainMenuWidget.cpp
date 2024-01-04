@@ -22,5 +22,5 @@ void UMainMenuWidget::PresJoinGame()
 {
 	UE_LOG(LogTemp, Warning, TEXT("UMainMenuWidget::PresJoinGame) "));
 
-	GetWorld()->GetFirstPlayerController()->ClientTravel(TEXT("127.0.0.1"), TRAVEL_Absolute);
+	GetWorld()->GetFirstPlayerController()->ClientTravel(ClientURL, TRAVEL_Absolute);
 }

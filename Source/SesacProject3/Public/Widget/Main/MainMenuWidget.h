@@ -24,4 +24,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	FString TravelURL;
+	UPROPERTY(EditDefaultsOnly)
+	FString ClientURL;
 };
