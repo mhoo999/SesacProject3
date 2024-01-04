@@ -16,7 +16,9 @@
 #include "Components/WidgetInteractionComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "MyGameModeBase.h"
+#include "UnrealWidgetFwd.h"
 #include "WidgetPointerComponent.h"
+#include "Widget/InGame/RoundWidget.h"
 
 
 // Sets default values
@@ -73,6 +75,10 @@ APlayerCharacter::APlayerCharacter()
 	AnimComp = CreateDefaultSubobject<UVRPlayerAnimComp>(TEXT("VR Anim Component"));
 	// 240103 SY Widget Comp 추가
 	WidgetComp = CreateDefaultSubobject<UWidgetComp>(TEXT("VR Widget Component"));
+
+	// 240105 SH Widget Component  추가
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetupAttachment(CameraComp);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -216,6 +222,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//240103 SY Widget Comp 입력 받기
 		WidgetComp->SetupPlayerInputComponent(EnhancedInputComponent, LeftTrigger); //240103 추가
 	}
+}
+
+URoundWidget* APlayerCharacter::GetRoundWidget() const
+{
+	return Cast<URoundWidget>(WidgetComponent->GetWidget());
 }
 
 void APlayerCharacter::StartAttack()

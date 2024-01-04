@@ -6,6 +6,8 @@
 #include "InputAction.h"
 #include "PlayerCharacter.generated.h"
 
+class URoundWidget;
+class UWidgetComponent;
 class UWidgetInteractionComponent;
 class UWidgetPointerComponent;
 class UTextRenderComponent;
@@ -30,10 +32,14 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	URoundWidget* GetRoundWidget() const;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* HMDComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* WidgetComponent;
+	
 	/*
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComp;

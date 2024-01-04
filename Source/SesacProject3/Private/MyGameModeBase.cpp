@@ -8,8 +8,10 @@
 #include <GameFramework/PlayerStart.h>
 
 #include "MyGameStateBase.h"
+#include "Character/PlayerCharacter.h"
 #include "GameFramework/PlayerState.h"
 #include "PlayerController/MyPlayerController.h"
+#include "Widget/InGame/RoundWidget.h"
 
 void AMyGameModeBase::BeginPlay()
 {
@@ -33,6 +35,10 @@ void AMyGameModeBase::SetPlayerStart()
 
 void AMyGameModeBase::StartRound()
 {
+	if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(Player1))
+	{
+		PlayerCharacter->GetRoundWidget()->SetCount(3);
+	}
 	Player1->SetActorLocation(Player1Start->GetActorLocation());
 	Player1->SetActorRotation(Player1Start->GetActorRotation());
 
