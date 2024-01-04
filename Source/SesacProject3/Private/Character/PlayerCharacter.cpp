@@ -35,7 +35,7 @@ APlayerCharacter::APlayerCharacter()
 	LeftController->SetTrackingMotionSource(FName("Left"));
 
 	LeftHandMesh->SetupAttachment(LeftController);
-	LeftHandMesh->SetRelativeRotation(FRotator(-50, 180, 90));
+	LeftHandMesh->SetRelativeRotation(FRotator(-10, 180, 90));
 	
 	LeftLog = CreateDefaultSubobject<UTextRenderComponent>("LeftLog");
 	LeftLog->SetupAttachment(LeftHandMesh);
@@ -46,13 +46,18 @@ APlayerCharacter::APlayerCharacter()
 	LeftLog->SetVerticalAlignment(EVRTA_TextCenter);
 	LeftLog->SetTextRenderColor(FColor(255, 255, 0));
 	
+	LeftPointer = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Left Widget Pointer"));
+	LeftPointer->SetupAttachment(LeftHandMesh);
+	LeftPointer->SetRelativeLocation(FVector(0, 10, 0));
+	LeftPointer->SetRelativeRotation(FRotator(0, 90,0));
+	
 	RightController = CreateDefaultSubobject<UMotionControllerComponent>("RightController");
 	RightController->SetupAttachment(RootComponent);
 	RightController->SetRelativeLocation(FVector(50, 30, -10));
 	RightController->SetTrackingMotionSource(FName("Right"));
 
 	RightHandMesh->SetupAttachment(RightController);
-	RightHandMesh->SetRelativeRotation(FRotator(50, 0, 90));
+	RightHandMesh->SetRelativeRotation(FRotator(10, 0, 90));
 
 	RightLog = CreateDefaultSubobject<UTextRenderComponent>("RightLog");
 	RightLog->SetupAttachment(RightHandMesh);
@@ -62,11 +67,6 @@ APlayerCharacter::APlayerCharacter()
 	RightLog->SetHorizontalAlignment(EHTA_Center);
 	RightLog->SetVerticalAlignment(EVRTA_TextCenter);
 	RightLog->SetTextRenderColor(FColor(255, 255, 0));
-
-	RightPointer = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("Right Widget Pointer"));
-	RightPointer->SetupAttachment(RightHandMesh);
-	RightPointer->SetRelativeLocation(FVector(0, 10, 0));
-	RightPointer->SetRelativeRotation(FRotator(0, 90,0));
 
 	// 240102 SY IK Comp 추가 (애니메이션 컴포넌트)
 	AnimComp = CreateDefaultSubobject<UVRPlayerAnimComp>(TEXT("VR Anim Component"));
@@ -94,6 +94,11 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	CameraComp->SetRelativeLocation(FVector(0, 0, -100));
+
+	if (GetController() == GetWorld()->GetFirstPlayerController())
+	{
+		GetMesh()->SetVisibility(false);
+	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -108,7 +113,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	if (bIsAttack)
 	{
-		DrawDebugLine(GetWorld(), RightHandMesh->GetComponentLocation(), RightHandMesh->GetComponentLocation() + RightHandMesh->GetForwardVector() * 500.0f, FColor::Red, false, 1.5f, 0, 3);
+		DrawDebugLine(GetWorld(), RightHandMesh->GetComponentLocation(), RightHandMesh->GetComponentLocation() + RightHandMesh->GetForwardVector() * 500.0f, FColor::Red, false, 0.5f, 0, 1);
 	}
 
 #pragma region (CurrentLoc - OldLoc) / DeltaTime
@@ -122,7 +127,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	// 	OldLocation = RightController->GetComponentLocation();
 	// }
 
-	FRotator RelativeRotation = FTransform(GetActorRotation()).InverseTransformRotation(RightController->GetComponentRotation().Quaternion()).Rotator();
+	// FRotator RelativeRotation = FTransform(GetActorRotation()).InverseTransformRotation(RightController->GetComponentRotation().Quaternion()).Rotator();
 	
 	// FVector DebugVector = FVector(1, 0, 0) * 100.f;
 	// DebugVector = RelativeRotation.RotateVector(DebugVector);
@@ -207,7 +212,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(RightTrigger, ETriggerEvent::Completed, this, &APlayerCharacter::StopDefence);
 
 		//240103 SY Widget Comp 입력 받기
-		WidgetComp->SetupPlayerInputComponent(EnhancedInputComponent, RightTrigger); //240103 추가
+		WidgetComp->SetupPlayerInputComponent(EnhancedInputComponent, LeftTrigger); //240103 추가
 	}
 }
 
@@ -238,15 +243,12 @@ bool APlayerCharacter::IsAttack()
 
 void APlayerCharacter::StartDefence()
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Defence On"));
+	UE_LOG(LogTemp, Warning, TEXT("Defence On"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
 	Weapon->SetDefenceMode(true);
 	
-	if (!bIsMoveVertical)
-	{
-		MoveHorizontal(RightController->GetComponentRotation().Roll);
-	}
+	MoveHorizontal(RightController->GetComponentRotation().Roll);
 }
 
 void APlayerCharacter::StopDefence()
