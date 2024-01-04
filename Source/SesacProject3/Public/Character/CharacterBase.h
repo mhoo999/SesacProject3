@@ -31,8 +31,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* RightHandMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* Body;
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* Body;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	AWeaponBase* Weapon;

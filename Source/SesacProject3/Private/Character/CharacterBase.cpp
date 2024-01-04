@@ -14,9 +14,10 @@ ACharacterBase::ACharacterBase()
 	
 	RightHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>("RightHandMesh");
 	
-	Body = CreateDefaultSubobject<USkeletalMeshComponent>("Body");
+	/*Body = CreateDefaultSubobject<USkeletalMeshComponent>("Body");
+	Body->SetupAttachment(RootComponent);
 	Body->SetRelativeLocation(FVector(0, 0, -90));
-	Body->SetRelativeRotation(FRotator(0, -90, 0));
+	Body->SetRelativeRotation(FRotator(0, -90, 0));*/
 }
 
 void ACharacterBase::BeginPlay()

@@ -54,6 +54,9 @@ private:
 	UInputAction* RightTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
+	UInputAction* LeftTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* IMC;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Inputs", meta = (AllowPrivateAccess = "true"))
@@ -64,7 +67,7 @@ private:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components")
-	UWidgetInteractionComponent* RightPointer;
+	UWidgetInteractionComponent* LeftPointer;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* CameraComp;
