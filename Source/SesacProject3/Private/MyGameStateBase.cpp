@@ -202,5 +202,7 @@ void AMyGameStateBase::PlaySingle()
 
 void AMyGameStateBase::PlayMulti()
 {
-	
+	// Start Play
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("AMyGameStateBase::PlayMulti")));
 }
