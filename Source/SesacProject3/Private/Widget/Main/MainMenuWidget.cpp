@@ -3,9 +3,13 @@
 
 #include "Widget/Main/MainMenuWidget.h"
 
+#include "MyGameInstance.h"
+
 void UMainMenuWidget::PressSinglePlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("UMainMenuWidget::PressSinglePlay) "));
+
+	GetGameInstance<UMyGameInstance>()->SetGameMode(EGameMode::SINGLE);
 
 	GetWorld()->ServerTravel(TravelURL);
 }
@@ -14,6 +18,8 @@ void UMainMenuWidget::PressMultiPlay()
 {
 	UE_LOG(LogTemp, Warning, TEXT("UMainMenuWidget::PressMultiPlay) "));
 
+	GetGameInstance<UMyGameInstance>()->SetGameMode(EGameMode::MULTI);
+	
 	FString ServerURL = TravelURL + FString(TEXT("?listen"));
 	GetWorld()->ServerTravel(ServerURL, true);
 }
