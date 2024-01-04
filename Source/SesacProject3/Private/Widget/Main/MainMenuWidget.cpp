@@ -4,6 +4,18 @@
 #include "Widget/Main/MainMenuWidget.h"
 
 #include "MyGameInstance.h"
+#include "Components/Button.h"
+
+bool UMainMenuWidget::Initialize()
+{
+	if (Super::Initialize() == false) return false;
+
+	Btn_SinglePlay->OnClicked.AddDynamic(this, &UMainMenuWidget::PressSinglePlay);
+	Btn_MultiPlay->OnClicked.AddDynamic(this, &UMainMenuWidget::PressMultiPlay);
+	Btn_JoinGame->OnClicked.AddDynamic(this, &UMainMenuWidget::UMainMenuWidget::PresJoinGame);
+	
+	return true;
+}
 
 void UMainMenuWidget::PressSinglePlay()
 {

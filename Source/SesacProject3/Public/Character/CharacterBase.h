@@ -23,6 +23,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	
+	bool CheckFall();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "MySettings|Components", meta = (AllowPrivateAccess = "true"))
@@ -69,7 +72,12 @@ protected:
 
 	bool bIsMoveVertical = false;
 
+	class AMyGameModeBase* GameMode;
+
 public:
+	// Target 설정 함수
+	void SetTarget(ACharacterBase* NewTarget);
+	
 	// 방어 상태를 반환하는 함수
 	virtual bool IsDefence();
 

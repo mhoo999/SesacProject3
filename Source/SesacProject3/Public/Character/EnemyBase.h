@@ -37,9 +37,6 @@ public:
 
 	virtual FVector GetAttackAngle() override;
 
-private:
-	bool CheckFall();
-
 protected:
 	virtual void GazeAtTarget() override;
 	

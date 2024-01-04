@@ -91,14 +91,6 @@ void AEnemyBase::Release()
 void AEnemyBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false) return;
-
-	if (CheckFall())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Tick) %s CheckFall True"), *GetActorNameOrLabel());
-		GetWorld()->GetGameState<AMyGameStateBase>()->SetLoseCharacter(this);
-	}
 
 	GazeAtTarget();
 	
@@ -118,34 +110,15 @@ FVector AEnemyBase::GetAttackAngle()
 	return AttackAngle;
 }
 
-bool AEnemyBase::CheckFall()
-{
-	FHitResult OutHit;
-	FVector Start = GetActorLocation();
-	FVector End = Start - GetActorUpVector() * 100.0f;
-	FCollisionQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddIgnoredActor(this);
-	
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-	
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionQueryParams))
-	{
-		// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::CheckFall) OutHit Actor Name : %s"), *OutHit.GetActor()->GetActorNameOrLabel());
-		return false;
-	}
-	
-	return true;
-}
-
 void AEnemyBase::GazeAtTarget()
 {
 	Super::GazeAtTarget();
 
-	if (ACharacterBase* OtherCharacter = GetWorld()->GetGameState<AMyGameStateBase>()->GetOtherCharacter(this))
+	if (Target)
 	{
-		FVector Direction = OtherCharacter->GetActorLocation() - GetActorLocation();
-		Direction.Z = 0.0f;
-		SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());	
+		FVector Direction = Target->GetActorLocation() - GetActorLocation();
+        Direction.Z = 0.0f;
+        SetActorRotation(FRotationMatrix::MakeFromX(Direction).Rotator());
 	}
 }
 

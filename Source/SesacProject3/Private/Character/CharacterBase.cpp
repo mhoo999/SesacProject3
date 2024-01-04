@@ -3,7 +3,9 @@
 
 #include "Character/CharacterBase.h"
 
+#include "MyGameModeBase.h"
 #include "MyGameStateBase.h"
+#include "PlayerController/MyPlayerController.h"
 #include "Weapon/WeaponBase.h"
 
 ACharacterBase::ACharacterBase()
@@ -23,6 +25,13 @@ ACharacterBase::ACharacterBase()
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority() == false) return;
+	
+	if (AMyPlayerController* OwningController = GetController<AMyPlayerController>())
+	{
+		OwningController->AddPlayerToGameState();
+	}
 	
 	/*GetWorld()->GetGameState<AMyGameStateBase>()->AddPlayer(this);
 
@@ -36,11 +45,42 @@ void ACharacterBase::BeginPlay()
 			GetWorld()->GetTimerManager().ClearTimer(FindTargetTimerHande);
 		}
 	}), 1.0f, true);*/
+
+	// GameMode 추가
+
+	GameMode = GetWorld()->GetAuthGameMode<AMyGameModeBase>();
+}
+
+bool ACharacterBase::CheckFall()
+{
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+	FVector End = Start - GetActorUpVector() * 100.0f;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionQueryParams))
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::CheckFall) OutHit Actor Name : %s"), *OutHit.GetActor()->GetActorNameOrLabel());
+		return false;
+	}
+	
+	return true;
 }
 
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GameMode && GameMode->IsRoundStarted() == false) return;
+
+	if (CheckFall())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Tick) %s CheckFall True"), *GetActorNameOrLabel());
+		GameMode->SetLoseCharacter(this);
+	}
 	
 	// 공격 성공, 방어 성공, 피격, 공격 실패일 경우 앞뒤로, 방어 상태일 경우 좌우로 이동
 	/*if (bMove)
@@ -65,6 +105,11 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ACharacterBase::SetTarget(ACharacterBase* NewTarget)
+{
+	Target = NewTarget;
 }
 
 bool ACharacterBase::IsDefence()

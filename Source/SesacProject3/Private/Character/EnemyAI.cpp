@@ -3,6 +3,7 @@
 
 #include "Character/EnemyAI.h"
 
+#include "MyGameModeBase.h"
 #include "MyGameStateBase.h"
 
 void AEnemyAI::BeginPlay()
@@ -14,7 +15,8 @@ void AEnemyAI::BeginPlay()
 
 void AEnemyAI::Tick(float DeltaSeconds)
 {
-	if (GetWorld()->GetGameState<AMyGameStateBase>()->IsRoundStarted() == false) return;
+	if (GameMode && GameMode->IsRoundStarted() == false) return;
+	
 	Super::Tick(DeltaSeconds);
 	
 	GazeAtTarget();
@@ -42,7 +44,7 @@ void AEnemyAI::Tick(float DeltaSeconds)
 				RollValue -= 360.f;
 			}
 			
-			// MoveHorizontal(RollValue);
+			MoveHorizontal(RollValue);
 		}
 		break;
 	case EEnemyState::STUN:
