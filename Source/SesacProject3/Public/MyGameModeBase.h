@@ -9,19 +9,27 @@
 class AEnemyAI;
 class ACharacterBase;
 class APlayerStart;
+class USoundBase;
+class UAudioComponent;
 UCLASS()
 class SESACPROJECT3_API AMyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
+	AMyGameModeBase();
+	
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	void SetPlayerStart();
 
 	void StartRound();
 
 	void SetLoseCharacter(ACharacterBase* LoseCharacter);
+
+	void Finish();
 	
 	void PlaySingle();
 	void PlayMulti();
@@ -43,4 +51,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess))
 	bool bIsRoundStarted;
+
+	bool bCountDown;
+	int32 CurrentCount;
+	float CurrentCountTime = 1.0f;
+
+	TArray<bool> ResultArray;
+
+	// Sound
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* BGMSound;
+	UAudioComponent* BGMAudioComponent;
 };

@@ -9,7 +9,8 @@
 
 #include "MyGameStateBase.h"
 #include "Character/CharacterBase.h"
-#include "Character/EnemyBase.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -49,9 +50,6 @@ void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// OldLocation = CurrentLocation;
-	// CurrentLocation = WeaponEndLocation->GetComponentLocation();
-
 	GetWeaponAngleVector();
 }
 
@@ -80,6 +78,7 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 				//DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, false, 3.0f, 0, 3.0f);
 				//DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
+				UGameplayStatics::PlaySoundAtLocation(this, BlockSound, WeaponEndLocation->GetComponentLocation());
 				OwningPlayer->FailAttack();
 				OwningPlayer->StartStun();
 				Character->SuccessDefence();
@@ -93,6 +92,9 @@ void AWeaponBase::OnBoxComponentBeginOverlap(UPrimitiveComponent* OverlappedComp
 		// DrawDebugLine(GetWorld(), OwningPlayer->GetActorLocation(), OwningPlayer->GetActorLocation() + ForwardVector, FColor::Red , false, 3.0f, 0, 3.0f);
 
 		// Todo : ReceiveDamage 할 때 this->GetKnockbackDistance() 를 받아서 쓸 것
+
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, WeaponEndLocation->GetComponentLocation());
+		
 		float CurrentKnockbackDistance = GetKnockbackDistance();
 		Character->SetMoveDistance(CurrentKnockbackDistance);
 		Character->ReceiveDamage();
@@ -111,12 +113,20 @@ void AWeaponBase::SetAttackMode(bool bIsNewAttackMode)
 {
 	bIsAttackMode = bIsNewAttackMode;
 
+	if (bIsAttackMode)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SwingSound, WeaponEndLocation->GetComponentLocation(),
+			FRotator(), 3.0f);
+	}
+
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void AWeaponBase::SetDefenceMode(bool bIsNewDefenceMode)
 {
 	bIsDefenceMode = bIsNewDefenceMode;
+
+	SwordMesh->SetRenderCustomDepth(bIsDefenceMode);
 }
 
 FVector AWeaponBase::GetWeaponEndLocation() const
