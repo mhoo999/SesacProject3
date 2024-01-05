@@ -136,6 +136,7 @@ bool ACharacterBase::IsAttack()
 // 공격 성공
 void ACharacterBase::SuccessAttack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::SuccessAttack) MoveDistance : %f"), MoveDistance);
 	// 앞으로 MoveDistance 만큼 이동
 	MoveVertical(MoveDistance);
 }
@@ -153,6 +154,8 @@ void ACharacterBase::ReceiveDamage()
 	// 못 막았을 때, 방어 상태가 풀리도록
 	bIsDefence = false;
 	Weapon->SetDefenceMode(false);
+
+	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::ReceiveDamage) MoveDistance : %f"), MoveDistance);
 
 	// 뒤로 -MoveDistance 만큼 이동
 	MoveVertical(MoveDistance * -1);
@@ -174,11 +177,11 @@ void ACharacterBase::FailAttack()
 
 void ACharacterBase::MoveVertical(float Distance)
 {
-	Destination = GetActorLocation() + GetActorForwardVector() * Distance;
+	//Destination = GetActorLocation() + GetActorForwardVector() * Distance;
 	// bMove = true;
 	// bIsMoveVertical = true;
 
-	SetActorLocation(Destination);
+	AddActorWorldOffset((Target->GetActorLocation() - GetActorLocation()).GetSafeNormal() * Distance);
 }
 
 void ACharacterBase::MoveHorizontal(float SwordAngle)
@@ -191,8 +194,11 @@ void ACharacterBase::MoveHorizontal(float SwordAngle)
 
 	// 정규화된 값을 이용해서 새로운 Distance 도출
 	float NewDistance = MoveHorizontalDistance * NewAngle;
+	
+	FVector ForwardVector = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	AddActorWorldOffset(GetActorRightVector() * NewDistance);
+	AddActorWorldOffset(FRotator(0, 90, 0).RotateVector(ForwardVector) * NewDistance);
+	// AddActorWorldOffset(GetActorRightVector() * NewDistance);
 	// Destination = GetActorLocation() + GetActorRightVector() * NewDistance;
 	// bMove = true;
 }

@@ -258,7 +258,7 @@ void APlayerCharacter::StartDefence()
 {
 	if (GameMode && GameMode->IsRoundStarted() == false) return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("Defence On"));
+	// UE_LOG(LogTemp, Warning, TEXT("Defence On"));
 	LeftLog->SetText(FText::FromString(TEXT("Defence:ON")));
 	bIsDefence = true;
 	Weapon->SetDefenceMode(true);
