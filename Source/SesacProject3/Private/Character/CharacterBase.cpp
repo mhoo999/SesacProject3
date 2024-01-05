@@ -181,11 +181,13 @@ void ACharacterBase::MoveVertical(float Distance)
 	// bMove = true;
 	// bIsMoveVertical = true;
 
-	AddActorWorldOffset((Target->GetActorLocation() - GetActorLocation()).GetSafeNormal() * Distance);
+	if (Target) AddActorWorldOffset((Target->GetActorLocation() - GetActorLocation()).GetSafeNormal() * Distance);
 }
 
 void ACharacterBase::MoveHorizontal(float SwordAngle)
 {
+	if (Target == nullptr) return;
+	
 	float MaxValue = 180.0f;
 	float MinValue = 0.0f;
 	
