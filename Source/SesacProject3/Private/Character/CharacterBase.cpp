@@ -110,6 +110,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ACharacterBase::SetTarget(ACharacterBase* NewTarget)
 {
 	Target = NewTarget;
+	GazeAtTarget();
 }
 
 bool ACharacterBase::IsDefence()

@@ -4,14 +4,29 @@
 #include "Widget/InGame/RoundWidget.h"
 #include <Components/Image.h>
 
-void URoundWidget::HideCount()
+#include "Components/HorizontalBox.h"
+
+void URoundWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
-	CountOpacity -= GetWorld()->GetDeltaSeconds();
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (Img_Count->GetVisibility() == ESlateVisibility::Visible)
+	{
+		HideCount(InDeltaTime);
+	}
+
+	if (Img_Start->GetVisibility() == ESlateVisibility::Visible)
+	{
+		HideStart(InDeltaTime);
+	}
+}
+
+void URoundWidget::HideCount(float InDeltaTime)
+{
+	CountOpacity -= InDeltaTime;
 
 	if (CountOpacity <= 0.0f)
 	{
-		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
-		TimerManager.ClearTimer(CountHideTimer);
 		Img_Count->SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
@@ -20,15 +35,41 @@ void URoundWidget::HideCount()
 	}
 }
 
+void URoundWidget::HideStart(float InDeltaTime)
+{
+	StartOpacity -= InDeltaTime;
+
+	if (StartOpacity <= 0.0f)
+	{
+		Img_Start->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	else
+	{
+		Img_Start->SetOpacity(StartOpacity);
+	}
+}
+
+void URoundWidget::ShowStartImage()
+{
+	StartOpacity = 1.f;
+	Img_Start->SetOpacity(StartOpacity);
+	Img_Start->SetVisibility(ESlateVisibility::Visible);
+}
+
+void URoundWidget::ShowFinishImage()
+{
+	Img_Finish->SetVisibility(ESlateVisibility::Visible);
+}
+
 void URoundWidget::SetCount(int32 CurrentCount)
 {
-	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
-	if (CountHideTimer.IsValid())
-	{
-		TimerManager.ClearTimer(CountHideTimer);
-	}
-	Img_Count->SetVisibility(ESlateVisibility::HitTestInvisible);
+	CountOpacity = 1.f;
+	Img_Count->SetOpacity(CountOpacity);
+	Img_Count->SetVisibility(ESlateVisibility::Visible);
 	Img_Count->SetBrushFromTexture(CountTextureArray[CurrentCount - 1]);
+}
 
-	TimerManager.SetTimer(CountHideTimer, this, &URoundWidget::HideCount, 0.1f, true);
+void URoundWidget::SetResult(int32 CurrentRound, bool bWin)
+{
+	Cast<UImage>(HB_Result->GetChildAt((CurrentRound - 1) * 2))->SetBrushFromTexture(bWin ? WinImage : LoseImage);
 }

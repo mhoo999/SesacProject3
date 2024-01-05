@@ -75,4 +75,12 @@ private:
 
 
 	FVector WeaponAngleVector;
+
+	// Sound
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* SwingSound;
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* BlockSound;
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* HitSound;
 };
