@@ -61,5 +61,7 @@ public:
 	// Sound
 	UPROPERTY(EditDefaultsOnly)
 	USoundBase* BGMSound;
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* FinishSound;
 	UAudioComponent* BGMAudioComponent;
 };

@@ -162,6 +162,7 @@ void AMyGameModeBase::SetLoseCharacter(ACharacterBase* LoseCharacter)
 void AMyGameModeBase::Finish()
 {
 	BGMAudioComponent->Stop();
+	UGameplayStatics::PlaySound2D(this, FinishSound, 3);
 	if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(Player1))
 	{
 		PlayerCharacter->GetRoundWidget()->ShowFinishImage();
