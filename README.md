@@ -22,5 +22,5 @@
 
 ## 작업 내용
 
-- [컨트롤러 모션에 따른 공격 판단 구현](Source/SesacProject3/Private/Character/CharacterBase.cpp#L150)
+- [컨트롤러 모션에 따른 공격 판단 구현](Source/SesacProject3/Private/Character/PlayerCharacter.cpp#L150)
 - [컨트롤러 방향에 따른 캐릭터의 움직임 제어](Source/SesacProject3/Private/Character/CharacterBase.cpp#L187)
